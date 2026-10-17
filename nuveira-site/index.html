@@ -11,6 +11,7 @@
 <style>
 :root{--bg:#000;--panel:#161616;--g2:#222;--line:#2e2e2e;--gold:#c9a24b;--gold2:#e6c878;--text:#f2f2f2;--mute:#9b9b9b;--s:1;--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='260' height='260'%3E%3Cdefs%3E%3Cpath id='a' d='M290 251l-23 51 17 22 1 1 6 0 0-49zM390 75l-83 0 0 9 16 1 4 2 4 4 2 4-1 10-10 24-77 169-6 12-2-2-16-58-61-72 60 198 8 0 49-113 55-119 15-29 9-15 10-9 12-6 13-1zM338 6l-108 1 0 8 1 1 7 0 11 2 9 3 6 5 6 8 5 11 1 30 0 136 1 0 14-28 0-117 2-21 2-5 4-8 6-6 5-4 13-4 15-2zM7 6l0 10 16 2 9 2 11 5 6 4 4 5 5 9 1 29 0 151-1 55-1 8-4 9-7 8-10 7-13 4-16 1-1 1 0 8 121 1 0-11-20-2-14-5-7-5-5-6-4-7-2-6-2-13 0-209 1-4 141 174 34 40 23-48 0-2-173-214z'/%3E%3C/defs%3E%3Cg fill='%23ded893' fill-opacity='.09' fill-rule='evenodd'%3E%3Cuse xlink:href='%23a' transform='translate(24 28) scale(.19)'/%3E%3Cuse xlink:href='%23a' transform='translate(154 158) scale(.19)'/%3E%3C/g%3E%3C/svg%3E")}
 [dir=rtl]{--s:-1}
+[dir=ltr]{--tx:12%}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg) var(--pat);color:var(--text);font:400 16px/1.8 Cairo,system-ui,sans-serif}
@@ -93,7 +94,7 @@ small{color:var(--mute)}
 .hsoc{display:flex;gap:2px}
 .hsoc a{width:34px;height:34px;display:grid;place-items:center;color:var(--mute);transition:color .2s}
 .hsoc svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,.28) 45%,rgba(0,0,0,.6) 80%,#000)}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 42% 62% at var(--tx,88%) 50%,rgba(0,0,0,.4),transparent),linear-gradient(180deg,rgba(0,0,0,.4) 0,rgba(0,0,0,.06) 28%,rgba(0,0,0,.04) 52%,rgba(0,0,0,.34) 72%,rgba(0,0,0,.78) 88%,#000 100%)}
 .hero>.wrap{position:relative;z-index:2}
 .hero h1,.hero p,.hero .btn{animation:up .9s cubic-bezier(.2,.7,.2,1) backwards}
 .hero p{animation-delay:.12s}.hero .btn{animation-delay:.24s}
@@ -145,6 +146,10 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .vp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .vp .i-play,.vp[data-p] .i-pause{display:none}
 .vp[data-p] .i-play{display:block}
+#shop{position:relative}
+#shop::before{content:"";position:absolute;left:0;right:0;top:0;height:170px;background:linear-gradient(#000,transparent);pointer-events:none}
+#shop>.wrap{position:relative}
+.size{display:inline-block;margin-bottom:14px;padding:1px 14px;border:1px solid var(--line);border-radius:999px;background:var(--g2);color:var(--text);font-size:14px}
 </style>
 </head>
 <body>
@@ -153,7 +158,6 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 <div class="act"><button class="lang" id="lang"></button><button class="cartbtn" id="openCart"><svg viewBox="0 0 24 24"><path d="M3 4h2.2l2.2 11h10.4l2-8H6.4"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><b id="count">0</b></button></div></div></header>
 <main id="top">
 <div class="hero"><video class="hv" autoplay muted loop playsinline preload="auto" poster="hero-poster.jpg" aria-hidden="true" tabindex="-1" disablepictureinpicture disableremoteplayback><source src="hero.mp4" type="video/mp4"><source src="hero.webm" type="video/webm"></video><button class="vp" id="vp" type="button" aria-label=""><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button><div class="wrap"><h1 data-t="h1"></h1><p data-t="hp"></p><a class="btn" href="#shop" data-t="cta"></a></div></div>
-<section style="background:var(--panel);border-block:1px solid var(--line);padding:68px 0"><div class="wrap" style="max-width:700px;text-align:center"><h2 data-t="ih"></h2><p class="sub" style="margin:0" data-t="ip"></p></div></section>
 <section id="shop"><div class="wrap"><h2 data-t="sh"></h2><p class="sub" data-t="ss"></p>
 <div class="tabs" id="tabs"></div><div class="grid" id="grid"></div></div></section>
 <section id="reviews" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap"><h2 data-t="rh"></h2><div class="rev" id="rev"></div></div></section>
@@ -179,9 +183,9 @@ const WA='905526071514';                                   // WhatsApp number, d
 const IG='https://www.instagram.com/nuveira.perfumes/';
 const TT='https://www.tiktok.com/@YOUR_TIKTOK_HANDLE';     // TODO: put the real TikTok link
 // [id, name, price in TL, category: m = men, w = women, u = unisex]
-const P=[[3,'Thair',699.99,'m'],[8,'Royal Elixir',899.99,'m'],[19,'Venero',799.99,'m'],[20,'Night Pulse',799.99,'m'],[40,'Crown Elixir',799.99,'m'],
-[31,'Roselle',699.99,'w'],[27,'Lumora',699.99,'w'],[4,'Ice Vanilla',699.99,'w'],[5,'Berry Goodness',699.99,'w'],
-[2,'Diplomatic Oud',799.99,'u'],[7,'Sucré Lutf',699.99,'u'],[10,'Noir Leather',699.99,'u'],[30,'Sucré Latte',699.99,'u'],[32,'Rouge Elixir',799.99,'u'],[35,'Mango Inferno',899.99,'u']].map(([id,name,price,c])=>({id,name,price,c}));
+const P=[[3,'Thair',699.99,'m'],[8,'Royal Elixir',899.99,'m'],[38,'Aura Mirage',799.99,'m'],[37,'Avenor',699.99,'m'],[11,'Midnight Aria',999.99,'m'],[40,'Crown Elixir',799.99,'m'],[20,'Night Pulse',799.99,'m'],
+[27,'Lumora',699.99,'w'],[4,'Ice Vanilla',699.99,'w'],[5,'Berry Goodness',699.99,'w'],[28,'Impadore',799.99,'w'],[101,'Imperium',699.99,'w'],
+[2,'Diplomatic Oud',799.99,'u'],[7,'Sucré Lutf',699.99,'u'],[30,'Sucré Latte',699.99,'u'],[10,'Noir Leather',699.99,'u'],[32,'Rouge Elixir',799.99,'u'],[102,'Mango Bloom',1599.99,'u'],[103,'Tropical Elixir',899.99,'u']].map(([id,name,price,c])=>({id,name,price,c}));
 // Per-perfume descriptions by id (Arabic / English). Others use the default line.
 const DESC={};
 // Fragrance notes. NT = note library [Arabic, English]. NOTES = perfume id -> [top, heart, base] note keys.
@@ -190,14 +194,13 @@ citrus:['حمضيات','Citrus'],lemon:['ليمون','Lemon'],grapefruit:['جر�
 pinkpepper:['فلفل وردي','Pink pepper'],cardamom:['هيل','Cardamom'],cinnamon:['قرفة','Cinnamon'],nutmeg:['جوزة الطيب','Nutmeg'],ginger:['زنجبيل','Ginger'],saffron:['زعفران','Saffron'],davana:['دافانا','Davana'],rosemary:['روزماري','Rosemary'],sage:['مريمية','Sage'],mint:['نعناع','Mint'],juniper:['عرعر','Juniper'],
 florals:['زهور','Florals'],whiteflowers:['زهور بيضا','White flowers'],rose:['ورد','Rose'],jasmine:['ياسمين','Jasmine'],orangeblossom:['زهر البرتقال','Orange blossom'],tuberose:['تيوبروز','Tuberose'],peony:['فاوانيا','Peony'],orchid:['أوركيد','Orchid'],lavender:['لافندر','Lavender'],violet:['بنفسج','Violet'],violetleaf:['ورق البنفسج','Violet leaf'],geranium:['جيرانيوم','Geranium'],carnation:['زهرة القرنفل','Carnation'],
 vanilla:['فانيليا','Vanilla'],tonka:['فول التونكا','Tonka bean'],praline:['برالين','Praline'],cocoa:['كاكاو','Cocoa'],coffee:['قهوة','Coffee'],toffee:['توفي','Toffee'],coumarin:['كومارين','Coumarin'],
-amber:['عنبر','Amber'],whiteamber:['عنبر أبيض','White amber'],ambergris:['عنبر رمادي','Ambergris'],ambrox:['أمبروكس','Ambrox'],amberwood:['خشب العنبر','Amberwood'],oud:['عود','Oud'],sandalwood:['صندل','Sandalwood'],cedar:['خشب الأرز','Cedar'],guaiac:['خشب الغاياك','Guaiac wood'],woods:['أخشاب','Woods'],pine:['صنوبر','Pine'],fir:['راتنج التنوب','Fir resin'],patchouli:['باتشولي','Patchouli'],vetiver:['فيتيفر','Vetiver'],oakmoss:['طحلب البلوط','Oakmoss'],moss:['طحلب','Moss'],benzoin:['جاوي','Benzoin'],elemi:['إليمي','Elemi'],incense:['بخور','Incense'],cypriol:['سيبريول','Cypriol'],musk:['مسك','Musk'],leather:['جلد','Leather'],suede:['سويد','Suede']};
+amber:['عنبر','Amber'],whiteamber:['عنبر أبيض','White amber'],ambergris:['عنبر رمادي','Ambergris'],ambrox:['أمبروكس','Ambrox'],amberwood:['خشب العنبر','Amberwood'],oud:['عود','Oud'],sandalwood:['صندل','Sandalwood'],cedar:['خشب الأرز','Cedar'],guaiac:['خشب الغاياك','Guaiac wood'],woods:['أخشاب','Woods'],pine:['صنوبر','Pine'],fir:['راتنج التنوب','Fir resin'],patchouli:['باتشولي','Patchouli'],vetiver:['فيتيفر','Vetiver'],oakmoss:['طحلب البلوط','Oakmoss'],moss:['طحلب','Moss'],benzoin:['جاوي','Benzoin'],elemi:['إليمي','Elemi'],incense:['بخور','Incense'],cypriol:['سيبريول','Cypriol'],musk:['مسك','Musk'],leather:['جلد','Leather'],suede:['سويد','Suede'],
+citron:['أترج','Citron'],orange:['برتقال','Orange'],bitterorange:['برتقال مر','Bitter orange'],passionfruit:['باشن فروت','Passion fruit'],frangipani:['فرانجيباني','Frangipani'],labdanum:['لابدانوم','Labdanum'],sichuan:['فلفل سيشوان','Sichuan pepper'],staranise:['يانسون نجمي','Star anise'],pear:['كمثرى','Pear'],akigalawood:['أكيغالا وود','Akigalawood'],pineapple:['أناناس','Pineapple'],hyacinth:['سنبل','Hyacinth'],iris:['سوسن','Iris'],fruits:['فواكه','Fruits'],whitemusk:['مسك أبيض','White musk'],blackcurrant:['كشمش أسود','Blackcurrant'],apricot:['مشمش','Apricot'],basil:['ريحان','Basil'],fig:['تين','Fig'],ambrette:['حب المسك','Ambrette'],neroli:['نيرولي','Neroli'],blacktea:['شاي أسود','Black tea']};
 const NOTES={
 8:[['cardamom','mandarin','bergamot'],['lavender','violetleaf','sage'],['benzoin','cedar','patchouli']],
 3:[['orangeblossom','bergamot','cinnamon'],['vanilla','elemi'],['guaiac','ambrox','praline','musk']],
 40:[['bergamot','pinkpepper','davana'],['oud','whiteamber','rosemary'],['leather','musk','vetiver']],
 20:[['grapefruit','mint','pinkpepper'],['ginger','nutmeg','jasmine'],['incense','vetiver','cedar','sandalwood']],
-19:[['apple','lavender','mint'],['sage','geranium','carnation'],['pine','patchouli','oakmoss']],
-31:[['lychee','rhubarb','bergamot'],['rose','peony','musk'],['vanilla','cedar','incense']],
 5:[['lavender','vanilla'],['vanilla'],['vanilla']],
 4:[['almond','coffee','bergamot'],['tuberose','jasmine','orangeblossom','rose'],['tonka','cocoa','vanilla','sandalwood']],
 27:[['mandarin','bergamot','lavender'],['jasmine','orangeblossom','orchid'],['tonka','vanilla','ambergris','vetiver']],
@@ -205,28 +208,32 @@ const NOTES={
 7:[['cinnamon','nutmeg','bergamot'],['dates','praline','tuberose'],['vanilla','tonka','benzoin','amberwood']],
 30:[['cinnamon','cardamom','ginger'],['praline','candied','whiteflowers'],['coffee','vanilla','tonka','benzoin','musk']],
 2:[['saffron'],['rose','oud'],['praline','vanilla']],
-35:[['mango','lemon','berry','ginger'],['coumarin','jasmine','woods'],['oud','cypriol','musk','amber']],
-32:[['saffron','jasmine'],['amberwood','ambergris'],['fir','cedar']]};
+32:[['saffron','jasmine'],['amberwood','ambergris'],['fir','cedar']],
+38:[['citron','bergamot','orange'],['ginger','neroli','cinnamon'],['blacktea','ambrox','guaiac','incense']],
+101:[['passionfruit','bitterorange','lemon'],['frangipani'],['vanilla','benzoin','labdanum']],
+37:[['bergamot'],['sichuan','lavender','staranise','nutmeg'],['ambrox','vanilla']],
+28:[['mandarin','bergamot','pear'],['rose','orangeblossom'],['akigalawood','vanilla','sandalwood']],
+11:[['pineapple','hyacinth'],['jasmine','iris','pinkpepper'],['patchouli','vetiver','amber','vanilla','musk']],
+102:[['orange','lemon','bergamot'],['fruits'],['whitemusk','vanilla','amber']],
+103:[['blackcurrant','citron','mint'],['apricot','basil','rose'],['fig','dates','ambrette']]};
 const rv=(n,t)=>[1,2,3].map(()=>({n,t,s:5}));
 const L={
 ar:{dir:'rtl',title:'نوفيرا للعطور',sw:'EN',n1:'التشكيلة',n2:'آراء العملاء',n3:'تواصل معانا',ct:'السلة',ct2:'سلتك',
 h1:'اتعمل عشان حضورك',hp:'ريحة ناعمة وفخمة، بتحسسك بالرقي كل يوم.',cta:'شوف التشكيلة',
-ih:'فخامة بشكل أبسط وأحدث',ip:'نوفيرا بتجمع الأناقة العصرية مع شخصية العطر الغنية، عشان تعيش تجربة راقية من أول نظرة لآخر لمسة.',
 sh:'التشكيلة',ss:'اختار القسم، دوس على العطر تشوف تفاصيله، واطلب على واتساب.',rh:'آراء العملاء',
 tot:'الإجمالي',wa:'اطلب على واتساب',ft:'© 2026 نوفيرا للعطور. كل المنتجات صنع في تركيا.',
 all:'الكل',cats:{m:'رجالي',w:'حريمي',u:'للجنسين'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',
-empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',more:c=>`كمان في قسم ${c}`,
+empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',more:c=>`كمان في قسم ${c}`,
 def:'ريحة مميزة من نوفيرا، غنية وناعمة وسهل تلبسها كل يوم. صنع في تركيا.',
 rv:rv('اسم العميل','حط هنا رأي حقيقي من عميل.'),
 m1:l=>`أهلاً 👋 ممكن أطلب ${l} ✨`,mN:l=>`أهلاً 👋\n\nممكن أطلب:\n${l.map(x=>'✨ '+x).join('\n')}`,
 me:t=>`\n\nالإجمالي: ${t} 💛\nممكن تعرّفوني الخطوات الجاية للدفع والتوصيل؟ شكراً جداً 🙏`},
 en:{dir:'ltr',title:'Nuveira Perfumes',sw:'عربي',n1:'Shop',n2:'Reviews',n3:'Contact',ct:'Cart',ct2:'Your cart',
 h1:'Crafted for presence',hp:'Elegant scents with depth, softness, and character, made to feel luxurious every day.',cta:'Shop the collection',
-ih:'A cleaner expression of luxury',ip:'Nuveira blends modern elegance with rich fragrance character, creating a refined experience from first glance to final impression.',
 sh:'The collection',ss:'Pick a category, tap a perfume for details, and order on WhatsApp.',rh:'What customers say',
 tot:'Total',wa:'Order on WhatsApp',ft:'© 2026 Nuveira Perfumes. All products are made in Turkey.',
 all:'All',cats:{m:"Men's",w:"Women's",u:'Unisex'},add:'Add to cart',done:'Added',x:'Close',
-empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',more:c=>`More ${c} fragrances`,
+empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',more:c=>`More ${c} fragrances`,
 def:'A Nuveira signature, rich, smooth and effortlessly wearable. Made in Turkey.',
 rv:rv('Customer name','Replace this with a real customer review.'),
 m1:l=>`Hello Nuveira! 👋 I would like to order ${l} ✨`,mN:l=>`Hello Nuveira! 👋\n\nI would like to order:\n${l.map(x=>'✨ '+x).join('\n')}`,
@@ -237,7 +244,11 @@ const $=s=>document.querySelector(s);
 const num=n=>n.toFixed(2)+' ₺';
 const money=n=>`<bdi>${num(n)}</bdi>`;
 const find=id=>P.find(p=>p.id==id);
-const ph=(p,tag,a='',z=512)=>`<${tag} class="ph" ${a}><img src="https://nuveira.odoo.com/web/image/product.product/${p.id}/image_${z}" width="800" height="1000" alt="${p.name}" loading="lazy" onerror="this.remove()"></${tag}>`;
+// Your own product photos: perfume id -> file name in the img folder (img/<name>.webp for the perfume page, img/<name>-sm.webp for the cards).
+// Perfumes not listed here still load their photo from the old Odoo shop. If a local file is missing, the Odoo photo is used instead.
+const IMG={3:'thair',8:'royal-elixir',38:'aura-mirage',37:'avenor',11:'midnight-aria',40:'crown-elixir',20:'night-pulse',27:'lumora',4:'ice-vanilla',5:'berry-goodness',28:'impadore',101:'imperium',2:'diplomatic-oud',7:'sucre-lutf',30:'sucre-latte',10:'noir-leather',32:'rouge-elixir',102:'mango-bloom',103:'tropical-elixir'};
+const odoo=(p,z)=>`https://nuveira.odoo.com/web/image/product.product/${p.id}/image_${z}`;
+const ph=(p,tag,a='',z=512)=>{const l=IMG[p.id];return`<${tag} class="ph" ${a}><img src="${l?`img/${l}${z>512?'':'-sm'}.webp`:odoo(p,z)}" ${l?`data-o="${odoo(p,z)}" `:''}width="800" height="1000" alt="${p.name}" loading="lazy" onerror="if(this.dataset.o&&!this.dataset.f){this.dataset.f=1;this.src=this.dataset.o}else this.remove()"></${tag}>`};
 let lang='ar',cat='all',qty=1,cart={};
 try{cart=JSON.parse(localStorage.getItem('nv')||'{}')}catch(e){}
 Object.keys(cart).forEach(k=>{if(!find(k))delete cart[k]});
@@ -263,7 +274,7 @@ function notes(p,T){
 function openDetail(id){
   const p=find(id),T=L[lang],d=$('#detail');qty=1;
   const rel=P.filter(x=>x.c==p.c&&x.id!=p.id);
-  d.innerHTML=`<button class="close" data-close aria-label="${T.x}">×</button><div class="wrap"><div class="detail">${ph(p,'div','',1024)}<div><h2><bdi>${p.name}</bdi></h2><span class="cat">${T.cats[p.c]}</span><div class="price">${money(p.price)}</div><p>${(DESC[p.id]||{})[lang]||T.def}</p><div class="row"><div class="qty"><button data-q="-1">−</button><span id="q">1</span><button data-q="1">+</button></div><button class="btn" data-addq="${p.id}">${T.add}</button></div>${notes(p,T)}</div></div><h2 style="font-size:clamp(24px,6.5vw,34px);margin-bottom:18px">${T.more(T.cats[p.c])}</h2><div class="grid" style="padding-bottom:70px">${rel.map(card).join('')}</div></div>`;
+  d.innerHTML=`<button class="close" data-close aria-label="${T.x}">×</button><div class="wrap"><div class="detail">${ph(p,'div','',1024)}<div><h2><bdi>${p.name}</bdi></h2><span class="cat">${T.cats[p.c]}</span><div class="price">${money(p.price)}</div><div class="size">${T.sz}</div><p>${(DESC[p.id]||{})[lang]||T.def}</p><div class="row"><div class="qty"><button data-q="-1">−</button><span id="q">1</span><button data-q="1">+</button></div><button class="btn" data-addq="${p.id}">${T.add}</button></div>${notes(p,T)}</div></div><h2 style="font-size:clamp(24px,6.5vw,34px);margin-bottom:18px">${T.more(T.cats[p.c])}</h2><div class="grid" style="padding-bottom:70px">${rel.map(card).join('')}</div></div>`;
   if(!d.classList.contains('open'))push();d.classList.add('open');d.scrollTop=0;document.body.style.overflow='hidden';d.querySelector('.close').focus();
 }
 let hd=0;
