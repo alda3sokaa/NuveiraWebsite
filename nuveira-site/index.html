@@ -157,7 +157,11 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 <nav><a href="#shop" data-t="n1"></a><a href="#reviews" data-t="n2"></a><a href="#contact" data-t="n3"></a></nav>
 <div class="act"><button class="lang" id="lang"></button><button class="cartbtn" id="openCart"><svg viewBox="0 0 24 24"><path d="M3 4h2.2l2.2 11h10.4l2-8H6.4"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><b id="count">0</b></button></div></div></header>
 <main id="top">
-<div class="hero"><video class="hv" autoplay muted loop playsinline preload="auto" poster="hero-poster.jpg" aria-hidden="true" tabindex="-1" disablepictureinpicture disableremoteplayback><source src="hero.mp4" type="video/mp4"><source src="hero.webm" type="video/webm"></video><button class="vp" id="vp" type="button" aria-label=""><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button><div class="wrap"><h1 data-t="h1"></h1><p data-t="hp"></p><a class="btn" href="#shop" data-t="cta"></a></div></div>
+<div class="hero"><video class="hv" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1" disablepictureinpicture disableremoteplayback></video><script>
+const HQ='(max-width:899px) and (orientation:portrait)';
+function heroSrc(){const v=document.querySelector('.hv'),f=matchMedia(HQ).matches?'hero-m':'hero';if(v.dataset.f===f)return false;v.dataset.f=f;v.poster=f+'-poster.jpg';v.innerHTML='<source src="'+f+'.mp4" type="video/mp4"><source src="'+f+'.webm" type="video/webm">';return true}
+heroSrc();
+</script><button class="vp" id="vp" type="button" aria-label=""><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button><div class="wrap"><h1 data-t="h1"></h1><p data-t="hp"></p><a class="btn" href="#shop" data-t="cta"></a></div></div>
 <section id="shop"><div class="wrap"><h2 data-t="sh"></h2><p class="sub" data-t="ss"></p>
 <div class="tabs" id="tabs"></div><div class="grid" id="grid"></div></div></section>
 <section id="reviews" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap"><h2 data-t="rh"></h2><div class="rev" id="rev"></div></div></section>
@@ -332,14 +336,16 @@ if(hv){
   hv.muted=true;
   const cn=navigator.connection;let hold=matchMedia('(prefers-reduced-motion:reduce)').matches||!!(cn&&cn.saveData);
   const pl=()=>{const r=hv.play();r&&r.catch&&r.catch(()=>{})};
+  const watch=()=>hv.querySelector('source:last-of-type').addEventListener('error',()=>{vp.hidden=true;const m='Hero video could not be loaded. Check that hero.mp4, hero.webm, hero-m.mp4 and hero-m.webm are in the same folder as index.html.';console.warn(m);
+    if(location.protocol=='file:'||/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)){const n=document.createElement('div');n.style.cssText='position:absolute;inset-inline-start:12px;bottom:12px;z-index:3;max-width:80%;font:12px/1.5 monospace;color:#ffd27a;background:rgba(0,0,0,.75);padding:6px 10px;border-radius:6px;direction:ltr';n.textContent=m;$('.hero').append(n)}});
+  watch();
   if(hold){hv.removeAttribute('autoplay');hv.pause();if(cn&&cn.saveData)hv.preload='none'}else pl();
   ['play','pause'].forEach(e=>hv.addEventListener(e,syncVp));
-  hv.querySelector('source:last-of-type').addEventListener('error',()=>{vp.hidden=true;const m='Hero video could not be loaded. Check that hero.mp4 and hero.webm are in the same folder as index.html.';console.warn(m);
-    if(location.protocol=='file:'||/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)){const n=document.createElement('div');n.style.cssText='position:absolute;inset-inline-start:12px;bottom:12px;z-index:3;max-width:80%;font:12px/1.5 monospace;color:#ffd27a;background:rgba(0,0,0,.75);padding:6px 10px;border-radius:6px;direction:ltr';n.textContent=m;$('.hero').append(n)}});
   hv.addEventListener('loadeddata',()=>{vp.hidden=false;syncVp()});
   vp.onclick=()=>{if(hv.paused){hold=false;pl()}else{hold=true;hv.pause()}};
   if('IntersectionObserver' in window)new IntersectionObserver(([e])=>e.isIntersecting?(!hold&&pl()):hv.pause()).observe($('.hero'));
   ['pointerdown','touchend','keydown'].forEach(e=>addEventListener(e,()=>{if(!hold&&hv.paused)pl()},{once:true,passive:true}));
+  matchMedia(HQ).addEventListener('change',()=>{if(heroSrc()){watch();hv.load();if(!hold)pl()}});
   syncVp();
 }
 </script>
