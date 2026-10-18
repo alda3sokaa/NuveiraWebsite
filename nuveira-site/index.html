@@ -187,7 +187,7 @@ const WA='905526071514';                                   // WhatsApp number, d
 const IG='https://www.instagram.com/nuveira.perfumes/';
 const TT='https://www.tiktok.com/@YOUR_TIKTOK_HANDLE';     // TODO: put the real TikTok link
 // [id, name, price in TL, category: m = men, w = women, u = unisex]
-const P=[[3,'Thair',699.99,'m'],[8,'Royal Elixir',899.99,'m'],[37,'Avenor',699.99,'m'],[11,'Midnight Aria',999.99,'m'],[40,'Crown Elixir',799.99,'m'],[20,'Night Pulse',799.99,'m'],
+const P=[[3,'Thair',699.99,'m'],[8,'Royal Elixir',899.99,'m'],[38,'Aura Mirage',799.99,'m'],[37,'Avenor',699.99,'m'],[11,'Midnight Aria',999.99,'m'],[40,'Crown Elixir',799.99,'m'],[20,'Night Pulse',799.99,'m'],
 [27,'Lumora',699.99,'w'],[4,'Ice Vanilla',699.99,'w'],[5,'Berry Goodness',699.99,'w'],[28,'Impadore',799.99,'w'],[101,'Imperium',699.99,'w'],
 [2,'Diplomatic Oud',799.99,'u'],[7,'Sucré Lutf',699.99,'u'],[30,'Sucré Latte',699.99,'u'],[10,'Noir Leather',699.99,'u'],[32,'Rouge Elixir',799.99,'u'],[102,'Mango Bloom',1599.99,'u'],[103,'Tropical Elixir',899.99,'u']].map(([id,name,price,c])=>({id,name,price,c}));
 // Per-perfume descriptions by id (Arabic / English). Others use the default line.
@@ -199,27 +199,28 @@ pinkpepper:['فلفل وردي','Pink pepper'],cardamom:['هيل','Cardamom'],ci
 florals:['زهور','Florals'],whiteflowers:['زهور بيضا','White flowers'],rose:['ورد','Rose'],jasmine:['ياسمين','Jasmine'],orangeblossom:['زهر البرتقال','Orange blossom'],tuberose:['تيوبروز','Tuberose'],peony:['فاوانيا','Peony'],orchid:['أوركيد','Orchid'],lavender:['لافندر','Lavender'],violet:['بنفسج','Violet'],violetleaf:['ورق البنفسج','Violet leaf'],geranium:['جيرانيوم','Geranium'],carnation:['زهرة القرنفل','Carnation'],
 vanilla:['فانيليا','Vanilla'],tonka:['فول التونكا','Tonka bean'],praline:['برالين','Praline'],cocoa:['كاكاو','Cocoa'],coffee:['قهوة','Coffee'],toffee:['توفي','Toffee'],coumarin:['كومارين','Coumarin'],
 amber:['عنبر','Amber'],whiteamber:['عنبر أبيض','White amber'],ambergris:['عنبر رمادي','Ambergris'],ambrox:['أمبروكس','Ambrox'],amberwood:['خشب العنبر','Amberwood'],oud:['عود','Oud'],sandalwood:['صندل','Sandalwood'],cedar:['خشب الأرز','Cedar'],guaiac:['خشب الغاياك','Guaiac wood'],woods:['أخشاب','Woods'],pine:['صنوبر','Pine'],fir:['راتنج التنوب','Fir resin'],patchouli:['باتشولي','Patchouli'],vetiver:['فيتيفر','Vetiver'],oakmoss:['طحلب البلوط','Oakmoss'],moss:['طحلب','Moss'],benzoin:['جاوي','Benzoin'],elemi:['إليمي','Elemi'],incense:['بخور','Incense'],cypriol:['سيبريول','Cypriol'],musk:['مسك','Musk'],leather:['جلد','Leather'],suede:['سويد','Suede'],
-citron:['أترج','Citron'],orange:['برتقال','Orange'],bitterorange:['برتقال مر','Bitter orange'],passionfruit:['باشن فروت','Passion fruit'],frangipani:['فرانجيباني','Frangipani'],labdanum:['لابدانوم','Labdanum'],sichuan:['فلفل سيشوان','Sichuan pepper'],staranise:['يانسون نجمي','Star anise'],pear:['كمثرى','Pear'],akigalawood:['أكيغالا وود','Akigalawood'],pineapple:['أناناس','Pineapple'],hyacinth:['سنبل','Hyacinth'],iris:['سوسن','Iris'],fruits:['فواكه','Fruits'],whitemusk:['مسك أبيض','White musk'],blackcurrant:['كشمش أسود','Blackcurrant'],apricot:['مشمش','Apricot'],basil:['ريحان','Basil'],fig:['تين','Fig'],ambrette:['حب المسك','Ambrette'],neroli:['نيرولي','Neroli'],blacktea:['شاي أسود','Black tea']};
+citron:['أترج','Citron'],orange:['برتقال','Orange'],bitterorange:['برتقال مر','Bitter orange'],passionfruit:['باشن فروت','Passionfruit'],frangipani:['فرانجيباني','Frangipani'],labdanum:['لابدانوم','Labdanum'],sichuan:['فلفل سيشوان','Sichuan pepper'],staranise:['يانسون نجمي','Star anise'],pear:['كمثرى','Pear'],akigalawood:['أكيغالا وود','Akigalawood'],pineapple:['أناناس','Pineapple'],hyacinth:['سنبل','Hyacinth'],iris:['سوسن','Iris'],fruits:['فواكه','Fruits'],whitemusk:['مسك أبيض','White musk'],blackcurrant:['كشمش أسود','Black Currant'],apricot:['مشمش','Apricot'],basil:['ريحان','Basil'],fig:['تين','Fig'],ambrette:['حب المسك','Ambrette'],neroli:['نيرولي','Neroli'],blacktea:['شاي أسود','Black tea'],
+bourbonvanilla:['فانيليا بوربون','Bourbon Vanilla'],ambroxan:['أمبروكسان','Ambroxan'],tangerine:['يوسفي','Tangerine'],calabrianbergamot:['برجموت كالابريا','Calabrian Bergamot'],sicilianorange:['برتقال صقلي','Sicilian Orange'],sicilianlemon:['ليمون صقلي','Sicilian Lemon'],nigerianginger:['زنجبيل نيجيري','Nigerian Ginger'],tunisianneroli:['نيرولي تونسي','Tunisian Neroli'],ceyloncinnamon:['قرفة سيلان','Ceylon Cinnamon'],chineseblacktea:['شاي أسود صيني','Chinese Black Tea'],olibanum:['لبان','Olibanum'],sicilianbergamot:['برجموت صقلي','Sicilian Bergamot'],agarwood:['عود','Agarwood (Oud)'],haitianvetiver:['فيتيفر هايتي','Haitian Vetiver'],isoesuper:['آيزو إي سوبر','Iso E Super'],mandarinorange:['برتقال يوسفي','Mandarin Orange'],tunisianorangeblossom:['زهر البرتقال التونسي','Tunisian Orange Blossom'],jasminesambac:['ياسمين سمبك','Jasmine Sambac'],madagascarvanilla:['فانيليا مدغشقر','Madagascar Vanilla'],orris:['جذور السوسن','Orris'],bulgarianrose:['ورد بلغاري','Bulgarian Rose'],cacao:['كاكاو','Cacao'],cashmerewood:['خشب الكشمير','Cashmere Wood'],vanillacaviar:['كافيار الفانيليا','Vanilla Caviar'],vanillaabsolute:['خلاصة الفانيليا','Vanilla Absolute'],italianmandarin:['يوسفي إيطالي','Italian Mandarin'],italianbergamot:['برجموت إيطالي','Italian Bergamot'],turkishrose:['ورد تركي','Turkish Rose'],moroccanorangeblossom:['زهر البرتقال المغربي','Moroccan Orange Blossom'],solarnotes:['نوتات شمسية','Solar Notes'],mahonial:['ماهونيال','Mahonial'],myrrh:['مُر','Myrrh'],coriander:['كزبرة','Coriander'],mayrose:['ورد مايو','May Rose'],carrotseeds:['بذور الجزر','Carrot Seeds']};
 const NOTES={
-8:[['cardamom','mandarin','bergamot'],['lavender','violetleaf','sage'],['benzoin','cedar','patchouli']],
-3:[['orangeblossom','bergamot','cinnamon'],['vanilla','elemi'],['guaiac','ambrox','praline','musk']],
-40:[['bergamot','pinkpepper','davana'],['oud','whiteamber','rosemary'],['leather','musk','vetiver']],
-20:[['grapefruit','mint','pinkpepper'],['ginger','nutmeg','jasmine'],['incense','vetiver','cedar','sandalwood']],
-5:[['lavender','vanilla'],['vanilla'],['vanilla']],
-4:[['almond','coffee','bergamot'],['tuberose','jasmine','orangeblossom','rose'],['tonka','cocoa','vanilla','sandalwood']],
-27:[['mandarin','bergamot','lavender'],['jasmine','orangeblossom','orchid'],['tonka','vanilla','ambergris','vetiver']],
-10:[['cardamom'],['leather','jasmine'],['amber','moss','patchouli']],
-7:[['cinnamon','nutmeg','bergamot'],['dates','praline','tuberose'],['vanilla','tonka','benzoin','amberwood']],
-30:[['cinnamon','cardamom','ginger'],['praline','candied','whiteflowers'],['coffee','vanilla','tonka','benzoin','musk']],
-2:[['saffron'],['rose','oud'],['praline','vanilla']],
-32:[['saffron','jasmine'],['amberwood','ambergris'],['fir','cedar']],
-38:[['citron','bergamot','orange'],['ginger','neroli','cinnamon'],['blacktea','ambrox','guaiac','incense']],
-101:[['passionfruit','bitterorange','lemon'],['frangipani'],['vanilla','benzoin','labdanum']],
-37:[['bergamot'],['sichuan','lavender','staranise','nutmeg'],['ambrox','vanilla']],
-28:[['mandarin','bergamot','pear'],['rose','orangeblossom'],['akigalawood','vanilla','sandalwood']],
-11:[['pineapple','hyacinth'],['jasmine','iris','pinkpepper'],['patchouli','vetiver','amber','vanilla','musk']],
-102:[['orange','lemon','bergamot'],['fruits'],['whitemusk','vanilla','amber']],
-103:[['blackcurrant','citron','mint'],['apricot','basil','rose'],['fig','dates','ambrette']]};
+3:[['bergamot','cardamom','orangeblossom','cinnamon'],['bourbonvanilla','elemi'],['praline','musk','ambroxan','guaiac']],
+8:[['cardamom','tangerine','bergamot'],['lavender','sage','violetleaf'],['benzoin','cedar','patchouli']],
+38:[['citron','calabrianbergamot','sicilianorange'],['nigerianginger','tunisianneroli','ceyloncinnamon'],['chineseblacktea','ambroxan','guaiac','olibanum']],
+37:[['bergamot'],['sichuan','lavender','staranise','nutmeg'],['ambroxan','vanilla']],
+11:[['pineapple','hyacinth'],['iris','jasmine','pinkpepper'],['musk','vetiver','amber','vanilla','patchouli']],
+40:[['sicilianbergamot','pinkpepper','davana'],['agarwood','whiteamber','rosemary'],['leather','musk','haitianvetiver']],
+20:[['grapefruit','lemon','mint','pinkpepper'],['ginger','nutmeg','jasmine','isoesuper'],['incense','vetiver','cedar','sandalwood','patchouli','labdanum','whitemusk']],
+27:[['lavender','mandarinorange','bergamot'],['lavender','tunisianorangeblossom','jasminesambac','orchid'],['madagascarvanilla','tonka','ambergris','vetiver']],
+4:[['almond','coffee','bergamot','lemon'],['tuberose','jasminesambac','orangeblossom','orris','bulgarianrose'],['tonka','cacao','vanilla','praline','sandalwood','amber','musk','cashmerewood','cinnamon','patchouli','cedar']],
+5:[['vanilla','lavender','cacao','ginger'],['vanillacaviar'],['vanillaabsolute']],
+28:[['italianmandarin','italianbergamot','pear'],['bulgarianrose','turkishrose','moroccanorangeblossom'],['praline','akigalawood','bourbonvanilla','sandalwood']],
+101:[['passionfruit','bitterorange','lemon'],['frangipani','solarnotes'],['madagascarvanilla','benzoin','labdanum']],
+2:[['saffron'],['rose','agarwood'],['praline','vanilla']],
+7:[['cinnamon','nutmeg','bergamot'],['dates','praline','tuberose','mahonial'],['vanilla','tonka','amberwood','myrrh','benzoin','akigalawood']],
+30:[['cinnamon','cardamom','ginger'],['candied','praline','whiteflowers'],['coffee','vanilla','tonka','benzoin','musk']],
+10:[['cardamom'],['leather','jasminesambac'],['amber','moss','patchouli']],
+32:[['jasmine','saffron'],['amberwood','ambergris'],['fir','cedar']],
+102:[['sicilianorange','calabrianbergamot','sicilianlemon'],['fruits'],['whitemusk','madagascarvanilla','amber']],
+103:[['citron','orange','mint','lemon','blackcurrant','coriander'],['apricot','basil','mayrose','carrotseeds'],['fig','dates','ambrette']]};
 const rv=(n,t)=>[1,2,3].map(()=>({n,t,s:5}));
 const L={
 ar:{dir:'rtl',title:'نوفيرا للعطور',sw:'EN',n1:'التشكيلة',n2:'آراء العملاء',n3:'تواصل معانا',ct:'السلة',ct2:'سلتك',
