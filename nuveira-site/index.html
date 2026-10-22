@@ -50,10 +50,9 @@ h2{font-size:clamp(30px,5vw,46px);color:var(--text);margin-bottom:6px}
 .cat{font-size:14px;color:var(--mute)}
 .price{color:var(--gold)}
 .add{margin-top:10px;border:1px solid #444;color:var(--text);padding:6px;border-radius:8px;text-align:center}
-.rev{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:26px;margin-top:28px}
-.rev blockquote{border-inline-start:2px solid #555;padding:2px 18px}
-.rev cite{display:block;margin-top:6px;color:var(--mute);font-style:normal;font-size:14px}
-.stars{color:var(--gold);letter-spacing:2px}
+.rev{column-count:3;column-gap:26px;margin-top:28px}
+.rev blockquote{break-inside:avoid;margin:0 0 26px;border-inline-start:2px solid var(--gold);padding:2px 18px}
+.rev p{white-space:pre-line}
 footer{background:var(--panel);border-top:1px solid var(--line);padding:56px 0;text-align:center}
 .soc{display:flex;gap:16px;justify-content:center;margin:22px 0}
 .soc a{width:46px;height:46px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--text)}
@@ -151,6 +150,8 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 #shop::before{content:"";position:absolute;left:0;right:0;top:0;height:170px;background:linear-gradient(#000,transparent);pointer-events:none}
 #shop>.wrap{position:relative}
 .size{display:inline-block;margin-bottom:14px;padding:1px 14px;border:1px solid var(--line);border-radius:999px;background:var(--g2);color:var(--text);font-size:14px}
+@media(max-width:860px){.rev{column-count:2}}
+@media(max-width:560px){.rev{column-count:1}}
 </style>
 </head>
 <body>
@@ -222,7 +223,14 @@ const NOTES={
 32:[['jasmine','saffron'],['amberwood','ambergris'],['fir','cedar']],
 102:[['sicilianorange','calabrianbergamot','sicilianlemon'],['fruits'],['whitemusk','madagascarvanilla','amber']],
 103:[['citron','orange','mint','lemon','blackcurrant','coriander'],['apricot','basil','mayrose','carrotseeds'],['fig','dates','ambrette']]};
-const rv=(n,t)=>[1,2,3].map(()=>({n,t,s:5}));
+// Customer reviews. ar = the original text exactly as the customer wrote it, en = the English translation. Add or remove entries here.
+const REVIEWS=[
+{ar:"يجماعة المسك تحفةةة ، وريحته ثابتة اوي وفنفس الوقت مش فواحة الي هو بزيادة ، فواحة على قد الي يقرب مني \"الي عايز يقدر يزود وهتبقى فواحة اكتر\" ف هي بجد تحفة ، والريحة خطيرة مشعارفة ازاي اوصفها بس ريحتها نظافة مع ورود وكيك حاجة كدة ، تسلم ايدكم بجد واستمرو فالتقدم للامام ، متاكدة انكم بالمستوى دا هتوصلو للعالمية قريب مش بعيد💗💗 \"اخدت المسك الفاتح مش الطهارة ، الي لونه مشمشي تقريبا\"",en:"You guys, the musk is a masterpiece!!! The scent really lasts, but at the same time it isn’t over the top. It projects just enough for whoever comes close to me (“if you want more, you can spray more and it’ll be stronger”). Honestly it’s a masterpiece, and the smell is wild, I don’t even know how to describe it, but it smells clean, like roses and cake or something. Thank you so much, and keep moving forward. I’m sure that at this level you’ll be going global soon, not far off at all 💗💗 “I got the light musk, not the Tahara one, the apricot-colored one, I think.”"},
+{ar:"العطر حلو جدا  وثابته حلو وحتى بمشي او بقعد مع اي حد بيقولي عطرك منين وتقريبا اغلب صاحبي هيستنو يرجعو من الاجازه عشان يشترو منكم الله يوفقكم ويسعدكم  شغلكم حلو جدا وعندكم ضمير",en:"The perfume is really nice and it lasts. Whether I’m walking or sitting with someone, people keep asking me where my perfume is from, and most of my friends are waiting until they’re back from vacation to buy from you. May God bless you and make you happy. Your work is really good and you’re honest people."},
+{ar:"عاشت إيدك على العطر ما شاء الله نفس كل مرة ثبات وفوحان بأعلى جودة \u200e\u200e%\u200e100",en:"Great job on this perfume, mashallah! Same as every time: it lasts and it projects, top quality, 100%."},
+{ar:"المهم الثبات 10/10\nالفوحان مابين معي منيح\nالتطابق 90% \nعجبني برضو القنينة فخمة جدا هيه والملصق وكأنه شي براند فرنسي 👌🏻👌🏻👌🏻❤️❤️❤️",en:"What matters: longevity 10/10\nProjection: somewhere between okay and good\nMatch: 90%\nI also loved the bottle, it looks really luxurious, and the label makes it look like a French brand 👌🏻👌🏻👌🏻❤️❤️❤️"},
+{ar:"مراحب شباب العطر الصراحه ثابت وريحتو لسا بأيدي من مبارح يعني عنجد يسلم اديكو يا غوالي وانشاءالله الجايات احسن ان شاء الله بتوفيق يارب 🤍",en:"Hey guys, honestly the perfume really lasts, I can still smell it on my hand from yesterday. Seriously, well done, my dear friends, and God willing the next ones will be even better. Wishing you every success 🤍"},
+{ar:"100/10 بجد تحفه أنا في الطبيعي مش بحب أي برفان بس ده بجد رهيب تسلم ايديكم",en:"100/10, honestly a masterpiece. I normally don’t like any perfume, but this one is seriously amazing. Well done, thank you!"}];
 const L={
 ar:{dir:'rtl',title:'نوفيرا للعطور',sw:'EN',n1:'التشكيلة',n2:'آراء العملاء',n3:'تواصل معانا',ct:'السلة',ct2:'سلتك',
 h1:'اتعمل عشان حضورك',hp:'ريحة ناعمة وفخمة، بتحسسك بالرقي كل يوم.',cta:'شوف التشكيلة',
@@ -231,7 +239,7 @@ tot:'الإجمالي',wa:'اطلب على واتساب',ft:'© 2026 نوفير�
 all:'الكل',cats:{m:'رجالي',w:'حريمي',u:'للجنسين'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',
 empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',more:c=>`كمان في قسم ${c}`,
 def:'ريحة مميزة من نوفيرا، غنية وناعمة وسهل تلبسها كل يوم. صنع في تركيا.',
-rv:rv('اسم العميل','حط هنا رأي حقيقي من عميل.'),
+rv:REVIEWS.map(r=>({t:r.ar})),
 m1:l=>`أهلاً 👋 ممكن أطلب ${l} ✨`,mN:l=>`أهلاً 👋\n\nممكن أطلب:\n${l.map(x=>'✨ '+x).join('\n')}`,
 me:t=>`\n\nالإجمالي: ${t} 💛\nممكن تعرّفوني الخطوات الجاية للدفع والتوصيل؟ شكراً جداً 🙏`},
 en:{dir:'ltr',title:'Nuveira Perfumes',sw:'عربي',n1:'Shop',n2:'Reviews',n3:'Contact',ct:'Cart',ct2:'Your cart',
@@ -241,7 +249,7 @@ tot:'Total',wa:'Order on WhatsApp',ft:'© 2026 Nuveira Perfumes. All products ar
 all:'All',cats:{m:"Men's",w:"Women's",u:'Unisex'},add:'Add to cart',done:'Added',x:'Close',
 empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',more:c=>`More ${c} fragrances`,
 def:'A Nuveira signature, rich, smooth and effortlessly wearable. Made in Turkey.',
-rv:rv('Customer name','Replace this with a real customer review.'),
+rv:REVIEWS.map(r=>({t:r.en})),
 m1:l=>`Hello Nuveira! 👋 I would like to order ${l} ✨`,mN:l=>`Hello Nuveira! 👋\n\nI would like to order:\n${l.map(x=>'✨ '+x).join('\n')}`,
 me:t=>`\n\nTotal: ${t} 💛\nCould you let me know the next steps for payment and delivery? Thank you so much! 🙏`}};
 // ======================
@@ -308,7 +316,7 @@ function render(){
   const T=L[lang],h=document.documentElement;
   h.lang=lang;h.dir=T.dir;document.title=T.title;$('#lang').textContent=T.sw;$('#openCart').setAttribute('aria-label',T.ct);syncVp();
   document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T[e.dataset.t]);
-  $('#rev').innerHTML=T.rv.map(r=>`<blockquote><div class="stars">${'★'.repeat(r.s)}</div><p>${r.t}</p><cite>${r.n}</cite></blockquote>`).join('');
+  $('#rev').innerHTML=T.rv.map(r=>`<blockquote><p>${r.t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></blockquote>`).join('');
   drawShop();drawCart();
 }
 const add=(id,q)=>{cart[id]=(cart[id]||0)+q;drawCart();const b=$('#count');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')};
