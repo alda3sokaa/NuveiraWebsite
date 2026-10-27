@@ -111,7 +111,7 @@ small{color:var(--mute)}
 @keyframes bump{50%{transform:scale(1.4)}}
 @media(max-width:520px){.wrap{padding:0 14px}.top .wrap{gap:8px}.logo{font-size:21px;letter-spacing:.08em}.act{gap:4px}.hsoc{gap:0}.hsoc a{width:34px;height:34px}.hsoc svg{width:18px;height:18px}.lang{padding:3px 10px}.cartbtn{width:38px;height:38px}}
 @media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}.detail{grid-template-columns:1fr;gap:24px}nav{display:none}section{padding:60px 0}}
-@media(prefers-reduced-motion:reduce){*,::before{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-motion:reduce){*:not(.track),::before{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 @media(hover:hover){
 nav a:hover{color:var(--gold2)}
 .lang:hover,.cartbtn:hover{border-color:var(--gold);color:var(--gold)}
@@ -149,15 +149,26 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 #shop::before{content:"";position:absolute;left:0;right:0;top:0;height:170px;background:linear-gradient(#000,transparent);pointer-events:none}
 #shop>.wrap{position:relative}
 .size{display:inline-block;margin-bottom:14px;padding:1px 14px;border:1px solid var(--line);border-radius:999px;background:var(--g2);color:var(--text);font-size:14px}
-.marq{overflow:hidden;direction:ltr;outline-offset:4px;-webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent)}
-.track{display:flex;align-items:center;gap:20px;padding-right:20px;width:max-content;animation:revslide var(--d,60s) linear infinite}
+.marq{position:relative;overflow:hidden;direction:ltr;outline-offset:4px}
+.marq::before,.marq::after{content:"";position:absolute;top:0;bottom:0;width:6%;z-index:2;pointer-events:none}
+.marq::before{left:0;background:linear-gradient(to right,var(--panel),transparent)}
+.marq::after{right:0;background:linear-gradient(to left,var(--panel),transparent)}
+.track{display:flex;align-items:center;gap:20px;padding-right:20px;width:max-content;will-change:transform;animation:revslide var(--d,60s) linear infinite}
 @keyframes revslide{from{transform:translateX(-50%)}to{transform:translateX(0)}}
-.marq:hover .track,.marq:focus-within .track,.marq:focus .track,.marq.hold .track{animation-play-state:paused}
+.marq.hold .track,.marq.tp .track,.marq:focus-visible .track{animation-play-state:paused}
+@media(hover:hover) and (pointer:fine){.marq:hover .track{animation-play-state:paused}}
 .track>blockquote{flex:0 0 380px;margin:0;padding:22px 24px;background:var(--g2);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:14px}
 [dir=rtl] .track>blockquote{direction:rtl}
 .track p{white-space:pre-line;font-size:15px;line-height:1.9}
 @media(max-width:560px){.track>blockquote{flex-basis:min(82vw,340px)}}
-@media(prefers-reduced-motion:reduce){.track{animation:none}.marq{overflow-x:auto;-webkit-mask-image:none;mask-image:none}.track .cl{display:none}}
+.marq.strip{overflow-x:auto}
+.marq.strip .track{animation:none;will-change:auto}
+.marq.strip .cl,.marq.strip::before,.marq.strip::after{display:none}
+#reviews .wrap{position:relative}
+.rp{position:absolute;top:10px;inset-inline-end:20px;z-index:3;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid #444;color:var(--text)}
+.rp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rp .i-play,.rp[data-p] .i-pause{display:none}
+.rp[data-p] .i-play{display:block}
 </style>
 </head>
 <body>
@@ -243,7 +254,7 @@ h1:'اتعمل عشان حضورك',hp:'ريحة ناعمة وفخمة، بتح�
 sh:'التشكيلة',ss:'اختار القسم، دوس على العطر تشوف تفاصيله، واطلب على واتساب.',rh:'آراء العملاء',
 tot:'الإجمالي',wa:'اطلب على واتساب',ft:'© 2026 نوفيرا للعطور. كل المنتجات صنع في تركيا.',
 all:'الكل',cats:{m:'رجالي',w:'حريمي',u:'للجنسين'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',
-empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',more:c=>`كمان في قسم ${c}`,
+empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',rp0:'شغّل عرض الآراء',rp1:'وقّف عرض الآراء',more:c=>`كمان في قسم ${c}`,
 def:'ريحة مميزة من نوفيرا، غنية وناعمة وسهل تلبسها كل يوم. صنع في تركيا.',
 rv:REVIEWS.map(r=>({t:r.ar})),
 m1:l=>`أهلاً 👋 ممكن أطلب ${l} ✨`,mN:l=>`أهلاً 👋\n\nممكن أطلب:\n${l.map(x=>'✨ '+x).join('\n')}`,
@@ -253,7 +264,7 @@ h1:'Crafted for presence',hp:'Elegant scents with depth, softness, and character
 sh:'The collection',ss:'Pick a category, tap a perfume for details, and order on WhatsApp.',rh:'What customers say',
 tot:'Total',wa:'Order on WhatsApp',ft:'© 2026 Nuveira Perfumes. All products are made in Turkey.',
 all:'All',cats:{m:"Men's",w:"Women's",u:'Unisex'},add:'Add to cart',done:'Added',x:'Close',
-empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',more:c=>`More ${c} fragrances`,
+empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',rp0:'Play reviews slideshow',rp1:'Pause reviews slideshow',more:c=>`More ${c} fragrances`,
 def:'A Nuveira signature, rich, smooth and effortlessly wearable. Made in Turkey.',
 rv:REVIEWS.map(r=>({t:r.en})),
 m1:l=>`Hello Nuveira! 👋 I would like to order ${l} ✨`,mN:l=>`Hello Nuveira! 👋\n\nI would like to order:\n${l.map(x=>'✨ '+x).join('\n')}`,
@@ -319,16 +330,20 @@ function drawCart(){
   try{localStorage.setItem('nv',JSON.stringify(cart))}catch(e){}
 }
 const SPEED=38; // review slideshow speed, pixels per second
+let revStrip=matchMedia('(prefers-reduced-motion:reduce)').matches,revHold=false;
+function revSync(){const m=$('#rev .marq'),b=$('#rp');if(!m||!b)return;const off=revStrip||revHold;m.classList.toggle('strip',revStrip);m.classList.toggle('hold',revHold&&!revStrip);b.toggleAttribute('data-p',off);b.setAttribute('aria-label',L[lang][off?'rp0':'rp1'])}
 function drawRev(){
   const T=L[lang],box=$('#rev');if(!T.rv.length){box.innerHTML='';return}
   const card=r=>`<blockquote><p>${r.t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></blockquote>`;
   const real=T.rv.map(card).join('');
-  box.innerHTML=`<div class="marq" tabindex="0" role="region" aria-label="${T.rh}"><div class="track">${real}</div></div>`;
-  const m=box.firstChild,tr=m.firstChild,n=T.rv.length,unit=tr.children[0].offsetWidth+20,k=Math.max(1,Math.ceil(m.clientWidth/(n*unit)));
+  box.innerHTML=`<button class="rp" id="rp" type="button"><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button><div class="marq" tabindex="0" role="region" aria-label="${T.rh}"><div class="track">${real}</div></div>`;
+  const m=$('#rev .marq'),tr=m.firstChild,n=T.rv.length,unit=tr.children[0].offsetWidth+20,k=Math.max(1,Math.ceil(m.clientWidth/(n*unit)));
   tr.innerHTML=real+real.replace(/<blockquote>/g,'<blockquote class="cl" aria-hidden="true">').repeat(2*k-1);
   tr.style.setProperty('--d',(k*n*unit/SPEED)+'s');
-  let t;m.addEventListener('touchstart',()=>{clearTimeout(t);m.classList.add('hold')},{passive:true});
-  ['touchend','touchcancel'].forEach(e=>m.addEventListener(e,()=>{t=setTimeout(()=>m.classList.remove('hold'),2500)},{passive:true}));
+  let t;m.addEventListener('touchstart',()=>{clearTimeout(t);m.classList.add('tp')},{passive:true});
+  ['touchend','touchcancel'].forEach(e=>m.addEventListener(e,()=>{t=setTimeout(()=>m.classList.remove('tp'),2500)},{passive:true}));
+  $('#rp').onclick=()=>{if(revStrip){revStrip=false;revHold=false}else revHold=!revHold;revSync()};
+  revSync();
 }
 let rw=innerWidth,rz;addEventListener('resize',()=>{if(innerWidth===rw)return;rw=innerWidth;clearTimeout(rz);rz=setTimeout(drawRev,300)});
 function render(){
