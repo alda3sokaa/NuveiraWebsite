@@ -58,7 +58,6 @@ footer{background:var(--panel);border-top:1px solid var(--line);padding:56px 0;t
 .soc svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 small{color:var(--mute)}
 
-/* Detail panel starts below the 64px header so header and cart remain visible */
 .panel{position:fixed;top:64px;bottom:0;left:0;right:0;z-index:40;background:var(--bg) var(--pat);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;display:none}
 .panel.open{display:block}
 .close{position:fixed;top:74px;inset-inline-end:18px;font-size:36px;line-height:1;color:var(--text);z-index:45}
@@ -71,7 +70,6 @@ small{color:var(--mute)}
 .qty span{min-width:28px;text-align:center}
 .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:22px}
 
-/* Cart overlay sits on top of everything including header */
 .shade{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:60;display:none}
 .shade.open{display:block}
 .drawer{position:fixed;top:0;bottom:0;inset-inline-end:0;width:min(400px,100%);background:var(--panel);border-inline-start:1px solid var(--line);z-index:70;transform:translateX(calc(100% * var(--s)));transition:transform .3s;display:flex;flex-direction:column}
@@ -82,6 +80,7 @@ small{color:var(--mute)}
 .items{flex:1;overflow:auto;padding:0 20px}
 .item{display:flex;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
 .item .n{flex:1}
+.item .subt{display:block;font-size:12px;color:var(--mute);line-height:1.4;margin-top:3px}
 .foot{padding:20px;border-top:1px solid var(--line)}
 .total{display:flex;justify-content:space-between;margin-bottom:14px;font-size:18px}
 .foot .btn{display:block}
@@ -173,6 +172,26 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .rp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .rp .i-play,.rp[data-p] .i-pause{display:none}
 .rp[data-p] .i-play{display:block}
+
+/* Discovery Set Picker */
+.tbox{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.tbox-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.tbox-title{font-size:18px;font-weight:700;color:var(--text)}
+.tbox-count{font-size:14px;color:var(--gold);font-weight:600;background:rgba(201,162,75,.12);border:1px solid rgba(201,162,75,.3);padding:2px 10px;border-radius:999px}
+.tpresets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tpreset{border:1px solid #444;border-radius:999px;padding:5px 14px;font-size:13px;color:var(--mute);transition:all .2s}
+.tpreset:hover{border-color:var(--gold);color:var(--text)}
+.tpreset.active{border-color:var(--gold);background:var(--gold);color:#000;font-weight:600}
+.tslots{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:18px}
+.tslot{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--mute);display:flex;align-items:center;justify-content:space-between;min-height:38px}
+.tslot.filled{border-style:solid;border-color:var(--gold);background:var(--g2);color:var(--text)}
+.tslot button{color:var(--mute);font-size:16px;line-height:1;padding:0 4px}
+.tslot button:hover{color:#ff5e5e}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;max-height:280px;overflow-y:auto;padding-inline-end:4px}
+.titem{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;text-align:start;display:flex;flex-direction:column;gap:2px;background:var(--g2);transition:all .2s}
+.titem .tc{font-size:11px;color:var(--mute)}
+.titem.sel{border-color:var(--gold);background:rgba(201,162,75,.15);color:var(--gold2)}
+.titem.dis{opacity:.4;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -206,16 +225,24 @@ heroSrc();
 
 <script>
 // ===== Edit these =====
-const WA='905526071514';                                   // WhatsApp number, digits only
+const WA='905526071514';
 const IG='https://www.instagram.com/nuveira.perfumes/';
-const TT='https://www.tiktok.com/@nuveira.perfumes';     
-// [id, name, price in TL, category: m = men, w = women, u = unisex]
-const P=[[3,'Thair',699.99,'m'],[8,'Royal Elixir',899.99,'m'],[38,'Aura Mirage',799.99,'m'],[37,'Avenor',699.99,'m'],[11,'Midnight Aria',999.99,'m'],[40,'Crown Elixir',799.99,'m'],[20,'Night Pulse',799.99,'m'],
+const TT='https://www.tiktok.com/@nuveira.perfumes';
+
+// [id, name, price in TL, category: m = men, w = women, u = unisex, o = other]
+const P=[
+[3,'Thair',699.99,'m'],[8,'Royal Elixir',899.99,'m'],[38,'Aura Mirage',799.99,'m'],[37,'Avenor',699.99,'m'],[11,'Midnight Aria',999.99,'m'],[40,'Crown Elixir',799.99,'m'],[20,'Night Pulse',799.99,'m'],
 [27,'Lumora',699.99,'w'],[4,'Ice Vanilla',699.99,'w'],[5,'Berry Goodness',699.99,'w'],[28,'Impadore',799.99,'w'],[101,'Imperium',699.99,'w'],
-[2,'Diplomatic Oud',799.99,'u'],[7,'Sucré Lutf',699.99,'u'],[30,'Sucré Latte',699.99,'u'],[10,'Noir Leather',699.99,'u'],[32,'Rouge Elixir',799.99,'u'],[102,'Mango Bloom',1599.99,'u'],[103,'Tropical Elixir',899.99,'u']].map(([id,name,price,c])=>({id,name,price,c}));
-// Per-perfume descriptions by id (Arabic / English). Others use the default line.
-const DESC={3:{ar:"أول بخّة بتحسسك إنك دخلت أوضة دافية منوّرة بضوء دهبي في ليلة باردة. حلاوة وبهارات في حضن ناعم، بتديك إحساس بالراحة والثقة. ريحة للسهرات الهادية والانطباع الأول اللي مبيتنساش.",en:"The first spray feels like stepping into a warm, golden-lit room on a cold evening. Sweet, spicy and wrapped in cozy softness, it makes you feel comforted, confident and impossible to ignore. A scent for slow nights and unforgettable first impressions."},8:{ar:"منعشة ونضيفة وفيها طاقة، كأنها بداية جديدة. بتحس بلمعة وأناقة في الأول، وبعدين بتهدى على ثقة دافية وهادية. للشخص اللي بيدخل أي مكان وهو عارف نفسه كويس.",en:"Crisp, clean and full of energy, like a fresh start. It feels sharp and polished at first, then relaxes into a calm, warm confidence. Made for the person who walks into a room knowing exactly who they are."},38:{ar:"أول ما تبخها بتحس بدفعة شمس. لامعة ومنعشة وأناقتها من غير مجهود، كأنك قاعد في تراس هادي في عصرية دهبية. خفيفة وفخمة في نفس الوقت، بتحسسك إنك منتعش ومرتب وجاهز لأي حاجة.",en:"A rush of sunshine the moment you spray. Bright, sparkling and effortlessly elegant, it feels like a golden afternoon on a quiet terrace. Light yet luxurious, it leaves you feeling fresh, polished and ready for anything."},37:{ar:"جريئة ومنعشة ومفتوحة، زي نفس عميق في هوا الليل البارد. بتبدأ بشرارة واثقة وبعدين بتستقر على دفا ناعم وجذاب. للأيام اللي عايز تحس فيها إنك قوي وحر وملفت.",en:"Bold, fresh and wide open, like a deep breath of cold night air. It starts with a confident spark and settles into a smooth, magnetic warmth. For the days you want to feel strong, free and noticed."},11:{ar:"بخّها وهتحس إن السهرة بدأت. عصيرية ومرحة في الأول، وبعدين مخملية وناعمة وفيها شوية غموض، زي أنوار المدينة وموسيقى هادية. بتحسسك بالفخامة والعصرية وبجاذبية خطيرة بشكل حلو.",en:"Spray it and the night begins. Juicy and playful at first, then velvety, smooth and a little mysterious, like city lights and soft music. It feels glamorous, modern and dangerously charming in the best way."},40:{ar:"قوة هادية جوه إزازة. ناعمة وعميقة وفيها غموض، تحسها زي المخمل والخشب الغامق وأوضة بتسكت لما تدخلها. للي مش محتاج يعلّي صوته عشان يتفتكر.",en:"Quiet power in a bottle. Smooth, deep and a little mysterious, it feels like velvet, dark wood and a room that goes silent when you walk in. For those who never need to raise their voice to be remembered."},20:{ar:"هادية ونضيفة وباردة، زي ليلة زرقا عميقة. بتحسسك بالأناقة والترتيب وبثقة هادية، تنفع من الصبح الشغل لحد عشاء متأخر.",en:"Cool, clean and calm, like a deep blue night. It feels sharp, polished and effortlessly classy, with a quiet confidence that fits every moment, from a busy morning to a late dinner."},27:{ar:"زي الساعة الدهبية على بشرتك. ناعمة ومشرقة وأنوثتها دافية، بتلفك بنور هادي بيحسسك بالأناقة والهدوء وجاذبية من غير مجهود. للست اللي بتنوّر المكان من غير ما تحاول.",en:"Like golden hour on your skin. Soft, radiant and warmly feminine, it wraps you in a gentle glow that feels elegant, calm and quietly irresistible. For the woman who lights up a room without trying."},4:{ar:"حلوة وجريئة وفيها إدمان صغير. تحسيها زي أحلى حلو دقتيه في حياتك ملفوف في حرير وثقة. فخمة ومغرية وواثقة من نفسها، لليالي اللي عايزة فيها كل العيون عليكي.",en:"Sweet, bold and a little addictive. It feels like the best dessert you have ever had, wrapped in silk and confidence. Glamorous, flirty and unapologetic, for nights when you want every eye on you."},5:{ar:"حضن دافي جوه إزازة. ناعمة وكريمي ومريحة جدًا، تحسيها زي بطانية دافية في مساء هادي. حلاوتها هادية ومش متكلفة، وبتدّيكي إحساس بالراحة والسعادة كل مرة تلبسيها.",en:"A warm hug in a bottle. Soft, creamy and endlessly comforting, it feels like a cozy blanket on a quiet evening. Sweet without trying too hard, it brings a calm, happy feeling every time you wear it."},28:{ar:"رومانسية في بخّة. مخملية وحنينة، تحسيها زي ورد وشموع، حلوة وقريبة من القلب. ريحة للمواعيد والأحلام واللحظات اللي عايزة تفتكريها.",en:"Romance, sprayed. Velvety and tender, it feels like rose petals and candlelight, sweet, intimate and unforgettable. A scent for dates, dreams and the moments you want to remember."},101:{ar:"شمس ومود إجازة في لحظة. عصيرية ومشرقة ودافية وفرحانة، تحسيها زي ضحكة تحت الشمس مع لمعة حلوة على بشرتك. البسيها لما تحبي مزاجك الحلو يبان.",en:"Instant sunshine and holiday mood. Juicy, bright and joyfully warm, it feels like laughing in the sun with a soft, sweet glow on your skin. Wear it when you want your good mood to show."},2:{ar:"دهبية وناعمة وفخمة بهدوء. تحسها زي حرير دافي وخشب غني، مع حلاوة ناعمة بتخليك تقف أطول شوية. أناقة سهرة صافية لمحبي الريحة اللي ليها حضور وهدوء.",en:"Golden, smooth and quietly majestic. It feels like warm silk and rich wood, with a soft sweetness that makes you stand a little taller. Pure evening elegance, for those who love a scent with presence and calm."},7:{ar:"دلع صافي. دافية وحلوة وبتوابلها الهادية، تحسها زي أول قضمة من حاجة لذيذة في ليلة باردة: مريحة وغنية ومش بتتقاوم. البسها لما تحب تحس بالدفا والجاذبية.",en:"Pure indulgence. Warm, sweet and softly spiced, it feels like the first bite of something delicious on a cold night: comforting, rich and hard to resist. Wear it when you want to feel cozy and irresistible."},30:{ar:"زي كوباية دافية في إيدك في عصرية مطرة. حلوة ومريحة وبتشدّك براحة، تحسها زي قهوة مع أحلى صحبة ونور هادي. راحة تقدر تلبسها.",en:"Like a warm cup in your hands on a rainy afternoon. Sweet, cozy and gently addictive, it feels like a coffee date, soft light and good company. Comfort you can wear."},10:{ar:"غامقة وناعمة ومغرية. تحسها زي جلد مستخدم وإضاءة خافتة وسر لسه مش مستعد تحكيه. عميقة وواثقة وفيها غموض، مصنوعة لليالي اللي بتبدأ بعد الغروب.",en:"Dark, smooth and sensual. It feels like worn leather, low light and a secret you are not ready to share. Deep, confident and a little mysterious, it is made for nights that begin after dark."},32:{ar:"خفيفة ومنوّرة وكأنها بلا وزن، زي حرير بيلمع تحت الشمس. بتلفك بدفا مضيء وناعم مع لمسة حلاوة، أنيقة وساحرة. ريحة بتحسسك بالإشراق.",en:"Light, glowing and almost weightless, like silk catching the sun. It wraps you in a soft, luminous warmth with a hint of sweetness, elegant and mesmerizing. A scent that feels like pure radiance."},102:{ar:"انفجار فرحة صيف عصيرية. منعشة ومشرقة ومليانة مرح، تحسها زي لقمة فاكهة ناضجة في يوم مشمس، وبعدين بتستقر على نعومة وحلاوة هادية. صعب متبتسمش.",en:"A burst of juicy summer joy. Bright, fresh and full of fun, it feels like biting into something ripe on a sunny day, then drifting into a soft, sweet glow. Hard not to smile."},103:{ar:"باردة وعصيرية ومنعشة بشكل جميل، زي مشروب مثلج في الضل. تحسها زي نسمة بحر في يوم حر: خفيفة ومرحة وفيها مفاجأة صغيرة. ريحة للهروب من الحر.",en:"Cool, juicy and wonderfully refreshing, like a chilled drink in the shade. It feels like a sea breeze on a hot day: light, playful and a little unexpected. A scent for escaping the heat."}};
-// Fragrance notes. NT = note library [Arabic, English]. NOTES = perfume id -> [top, heart, base] note keys.
+[2,'Diplomatic Oud',799.99,'u'],[7,'Sucré Lutf',699.99,'u'],[30,'Sucré Latte',699.99,'u'],[10,'Noir Leather',699.99,'u'],[32,'Rouge Elixir',799.99,'u'],[102,'Mango Bloom',1599.99,'u'],[103,'Tropical Elixir',899.99,'u'],
+[200,'Discovery Set',499.99,'o']].map(([id,name,price,c])=>({id,name,price,c})); // Moved to the very end
+
+const PRESET_MEN=[2,7,30,3,11,8];
+const PRESET_WOMEN=[2,7,30,5,4,27];
+
+const DESC={
+200:{ar:"مجموعة من 6 عينات (حجم 3 مل لكل عطر، يكفي حوالي 40 بخة) من اختيارك لتجربة عطور نوفيرا واكتشاف عطرك المفضل قبل طلب الحجم الكامل. اختار بنفسك العطور الـ 6، أو اختر ترشيحنا الجاهز.",en:"A discovery set of 6 testers (3 ml each, lasting approx. 40 sprays) of your choice to explore Nuveira fragrances and find your signature scent before ordering the full bottle. Choose your 6 perfumes, or select our curated set."},
+3:{ar:"أول بخّة بتحسسك إنك دخلت أوضة دافية منوّرة بضوء دهبي في ليلة باردة. حلاوة وبهارات في حضن ناعم، بتديك إحساس بالراحة والثقة. ريحة للسهرات الهادية والانطباع الأول اللي مبيتنساش.",en:"The first spray feels like stepping into a warm, golden-lit room on a cold evening. Sweet, spicy and wrapped in cozy softness, it makes you feel comforted, confident and impossible to ignore. A scent for slow nights and unforgettable first impressions."},8:{ar:"منعشة ونضيفة وفيها طاقة، كأنها بداية جديدة. بتحس بلمعة وأناقة في الأول، وبعدين بتهدى على ثقة دافية وهادية. للشخص اللي بيدخل أي مكان وهو عارف نفسه كويس.",en:"Crisp, clean and full of energy, like a fresh start. It feels sharp and polished at first, then relaxes into a calm, warm confidence. Made for the person who walks into a room knowing exactly who they are."},38:{ar:"أول ما تبخها بتحس بدفعة شمس. لامعة ومنعشة وأناقتها من غير مجهود، كأنك قاعد في تراس هادي في عصرية دهبية. خفيفة وفخمة في نفس الوقت، بتحسسك إنك منتعش ومرتب وجاهز لأي حاجة.",en:"A rush of sunshine the moment you spray. Bright, sparkling and effortlessly elegant, it feels like a golden afternoon on a quiet terrace. Light yet luxurious, it leaves you feeling fresh, polished and ready for anything."},37:{ar:"جريئة ومنعشة ومفتوحة، زي نفس عميق في هوا الليل البارد. بتبدأ بشرارة واثقة وبعدين بتستقر على دفا ناعم وجذاب. للأيام اللي عايز تحس فيها إنك قوي وحر وملفت.",en:"Bold, fresh and wide open, like a deep breath of cold night air. It starts with a confident spark and settles into a smooth, magnetic warmth. For the days you want to feel strong, free and noticed."},11:{ar:"بخّها وهتحس إن السهرة بدأت. عصيرية ومرحة في الأول، وبعدين مخملية وناعمة وفيها شوية غموض، زي أنوار المدينة وموسيقى هادية. بتحسسك بالفخامة والعصرية وبجاذبية خطيرة بشكل حلو.",en:"Spray it and the night begins. Juicy and playful at first, then velvety, smooth and a little mysterious, like city lights and soft music. It feels glamorous, modern and dangerously charming in the best way."},40:{ar:"قوة هادية جوه إزازة. ناعمة وعميقة وفيها غموض، تحسها زي المخمل والخشب الغامق وأوضة بتسكت لما تدخلها. للي مش محتاج يعلّي صوته عشان يتفتكر.",en:"Quiet power in a bottle. Smooth, deep and a little mysterious, it feels like velvet, dark wood and a room that goes silent when you walk in. For those who never need to raise their voice to be remembered."},20:{ar:"هادية ونضيفة وباردة، زي ليلة زرقا عميقة. بتحسسك بالأناقة والترتيب وبثقة هادية، تنفع من الصبح الشغل لحد عشاء متأخر.",en:"Cool, clean and calm, like a deep blue night. It feels sharp, polished and effortlessly classy, with a quiet confidence that fits every moment, from a busy morning to a late dinner."},27:{ar:"زي الساعة الدهبية على بشرتك. ناعمة ومشرقة وأنوثتها دافية، بتلفك بنور هادي بيحسسك بالأناقة والهدوء وجاذبية من غير مجهود. للست اللي بتنوّر المكان من غير ما تحاول.",en:"Like golden hour on your skin. Soft, radiant and warmly feminine, it wraps you in a gentle glow that feels elegant, calm and quietly irresistible. For the woman who lights up a room without trying."},4:{ar:"حلوة وجريئة وفيها إدمان صغير. تحسيها زي أحلى حلو دقتيه في حياتك ملفوف في حرير وثقة. فخمة ومغرية وواثقة من نفسها، لليالي اللي عايزة فيها كل العيون عليكي.",en:"Sweet, bold and a little addictive. It feels like the best dessert you have ever had, wrapped in silk and confidence. Glamorous, flirty and unapologetic, for nights when you want every eye on you."},5:{ar:"حضن دافي جوه إزازة. ناعمة وكريمي ومريحة جدًا، تحسيها زي بطانية دافية في مساء هادي. حلاوتها هادية ومش متكلفة، وبتدّيكي إحساس بالراحة والسعادة كل مرة تلبسيها.",en:"A warm hug in a bottle. Soft, creamy and endlessly comforting, it feels like a cozy blanket on a quiet evening. Sweet without trying too hard, it brings a calm, happy feeling every time you wear it."},28:{ar:"رومانسية في بخّة. مخملية وحنينة، تحسيها زي ورد وشموع، حلوة وقريبة من القلب. ريحة للمواعيد والأحلام واللحظات اللي عايزة تفتكريها.",en:"Romance, sprayed. Velvety and tender, it feels like rose petals and candlelight, sweet, intimate and unforgettable. A scent for dates, dreams and the moments you want to remember."},101:{ar:"شمس ومود إجازة في لحظة. عصيرية ومشرقة ودافية وفرحانة، تحسيها زي ضحكة تحت الشمس مع لمعة حلوة على بشرتك. البسيها لما تحبي مزاجك الحلو يبان.",en:"Instant sunshine and holiday mood. Juicy, bright and joyfully warm, it feels like laughing in the sun with a soft, sweet glow on your skin. Wear it when you want your good mood to show."},2:{ar:"دهبية وناعمة وفخمة بهدوء. تحسها زي حرير دافي وخشب غني، مع حلاوة ناعمة بتخليك تقف أطول شوية. أناقة سهرة صافية لمحبي الريحة اللي ليها حضور وهدوء.",en:"Golden, smooth and quietly majestic. It feels like warm silk and rich wood, with a soft sweetness that makes you stand a little taller. Pure evening elegance, for those who love a scent with presence and calm."},7:{ar:"دلع صافي. دافية وحلوة وبتوابلها الهادية، تحسها زي أول قضمة من حاجة لذيذة في ليلة باردة: مريحة وغنية ومش بتتقاوم. البسها لما تحب تحس بالدفا والجاذبية.",en:"Pure indulgence. Warm, sweet and softly spiced, it feels like the first bite of something delicious on a cold night: comforting, rich and hard to resist. Wear it when you want to feel cozy and irresistible."},30:{ar:"زي كوباية دافية في إيدك في عصرية مطرة. حلوة ومريحة وبتشدّك براحة، تحسها زي قهوة مع أحلى صحبة ونور هادي. راحة تقدر تلبسها.",en:"Like a warm cup in your hands on a rainy afternoon. Sweet, cozy and gently addictive, it feels like a coffee date, soft light and good company. Comfort you can wear."},10:{ar:"غامقة وناعمة ومغرية. تحسها زي جلد مستخدم وإضاءة خافتة وسر لسه مش مستعد تحكيه. عميقة وواثقة وفيها غموض، مصنوعة لليالي اللي بتبدأ بعد الغروب.",en:"Dark, smooth and sensual. It feels like worn leather, low light and a secret you are not ready to share. Deep, confident and a little mysterious, it is made for nights that begin after dark."},32:{ar:"خفيفة ومنوّرة وكأنها بلا وزن، زي حرير بيلمع تحت الشمس. بتلفك بدفا مضيء وناعم مع لمسة حلاوة، أنيقة وساحرة. ريحة بتحسسك بالإشراق.",en:"Light, glowing and almost weightless, like silk catching the sun. It wraps you in a soft, luminous warmth with a hint of sweetness, elegant and mesmerizing. A scent that feels like pure radiance."},102:{ar:"انفجار فرحة صيف عصيرية. منعشة ومشرقة ومليانة مرح، تحسها زي لقمة فاكهة ناضجة في يوم مشمس، وبعدين بتستقر على نعومة وحلاوة هادية. صعب متبتسمش.",en:"A burst of juicy summer joy. Bright, fresh and full of fun, it feels like biting into something ripe on a sunny day, then drifting into a soft, sweet glow. Hard not to smile."},103:{ar:"باردة وعصيرية ومنعشة بشكل جميل، زي مشروب مثلج في الضل. تحسها زي نسمة بحر في يوم حر: خفيفة ومرحة وفيها مفاجأة صغيرة. ريحة للهروب من الحر.",en:"Cool, juicy and wonderfully refreshing, like a chilled drink in the shade. It feels like a sea breeze on a hot day: light, playful and a little unexpected. A scent for escaping the heat."}};
+
 const NT={
 citrus:['حمضيات','Citrus'],lemon:['ليمون','Lemon'],grapefruit:['جريب فروت','Grapefruit'],mandarin:['يوسفي','Mandarin'],bergamot:['برجموت','Bergamot'],apple:['تفاح أخضر','Green apple'],berry:['توت','Berries'],mango:['مانجو','Mango'],lychee:['ليتشي','Lychee'],rhubarb:['راوند','Rhubarb'],candied:['فواكه مسكرة','Candied fruits'],dates:['تمر','Dates'],almond:['لوز','Almond'],
 pinkpepper:['فلفل وردي','Pink pepper'],cardamom:['هيل','Cardamom'],cinnamon:['قرفة','Cinnamon'],nutmeg:['جوزة الطيب','Nutmeg'],ginger:['زنجبيل','Ginger'],saffron:['زعفران','Saffron'],davana:['دافانا','Davana'],rosemary:['روزماري','Rosemary'],sage:['مريمية','Sage'],mint:['نعناع','Mint'],juniper:['عرعر','Juniper'],
@@ -223,7 +250,8 @@ florals:['زهور','Florals'],whiteflowers:['زهور بيضا','White flowers'
 vanilla:['فانيليا','Vanilla'],tonka:['فول التونكا','Tonka bean'],praline:['برالين','Praline'],cocoa:['كاكاو','Cocoa'],coffee:['قهوة','Coffee'],toffee:['توفي','Toffee'],coumarin:['كومارين','Coumarin'],
 amber:['عنبر','Amber'],whiteamber:['عنبر أبيض','White amber'],ambergris:['عنبر رمادي','Ambergris'],ambrox:['أمبروكس','Ambrox'],amberwood:['خشب العنبر','Amberwood'],oud:['عود','Oud'],sandalwood:['صندل','Sandalwood'],cedar:['خشب الأرز','Cedar'],guaiac:['خشب الغاياك','Guaiac wood'],woods:['أخشاب','Woods'],pine:['صنوبر','Pine'],fir:['راتنج التنوب','Fir resin'],patchouli:['باتشولي','Patchouli'],vetiver:['فيتيفر','Vetiver'],oakmoss:['طحلب البلوط','Oakmoss'],moss:['طحلب','Moss'],benzoin:['جاوي','Benzoin'],elemi:['إليمي','Elemi'],incense:['بخور','Incense'],cypriol:['سيبريول','Cypriol'],musk:['مسك','Musk'],leather:['جلد','Leather'],suede:['سويد','Suede'],
 citron:['أترج','Citron'],orange:['برتقال','Orange'],bitterorange:['برتقال مر','Bitter orange'],passionfruit:['باشن فروت','Passionfruit'],frangipani:['فرانجيباني','Frangipani'],labdanum:['لابدانوم','Labdanum'],sichuan:['فلفل سيشوان','Sichuan pepper'],staranise:['يانسون نجمي','Star anise'],pear:['كمثرى','Pear'],akigalawood:['أكيغالا وود','Akigalawood'],pineapple:['أناناس','Pineapple'],hyacinth:['سنبل','Hyacinth'],iris:['سوسن','Iris'],fruits:['فواكه','Fruits'],whitemusk:['مسك أبيض','White musk'],blackcurrant:['كشمش أسود','Black Currant'],apricot:['مشمش','Apricot'],basil:['ريحان','Basil'],fig:['تين','Fig'],ambrette:['حب المسك','Ambrette'],neroli:['نيرولي','Neroli'],blacktea:['شاي أسود','Black tea'],
-bourbonvanilla:['فانيليا بوربون','Bourbon Vanilla'],ambroxan:['أمبروكسان','Ambroxan'],tangerine:['يوسفي','Tangerine'],calabrianbergamot:['برجموت كالابريا','Calabrian Bergamot'],sicilianorange:['برتقال صقلي','Sicilian Orange'],sicilianlemon:['ليمون صقلي','Sicilian Lemon'],nigerianginger:['زنجبيل نيجيري','Nigerian Ginger'],tunisianneroli:['نيرولي تونسي','Tunisian Neroli'],ceyloncinnamon:['قرفة سيلان','Ceylon Cinnamon'],chineseblacktea:['شاي أسود صيني','Chinese Black Tea'],olibanum:['لبان','Olibanum'],sicilianbergamot:['برجموت صقلي','Sicilian Bergamot'],agarwood:['عود','Agarwood (Oud)'],haitianvetiver:['فيتيفر هايتي','Haitian Vetiver'],isoesuper:['آيزو إي سوبر','Iso E Super'],mandarinorange:['برتقال يوسفي','Mandarin Orange'],tunisianorangeblossom:['زهر البرتقال التونسي','Tunisian Orange Blossom'],jasminesambac:['ياسمين سمبك','Jasmine Sambac'],madagascarvanilla:['فانيليا مدغشقر','Madagascar Vanilla'],orris:['جذور السوسن','Orris'],bulgarianrose:['ورد بلغاري','Bulgarian Rose'],cacao:['كاكاو','Cacao'],cashmerewood:['خشب الكشمير','Cashmere Wood'],vanillacaviar:['كافيار الفانيليا','Vanilla Caviar'],vanillaabsolute:['خلاصة الفانيليا','Vanilla Absolute'],italianmandarin:['يوسفي إيطالي','Italian Mandarin'],italianbergamot:['برجموت إيطالي','Italian Bergamot'],turkishrose:['ورد تركي','Turkish Rose'],moroccanorangeblossom:['زهر البرتقال المغربي','Moroccan Orange Blossom'],solarnotes:['نوتات شمسية','Solar Notes'],mahonial:['ماهونيال','Mahonial'],myrrh:['مُر','Myrrh'],coriander:['كزبرة','Coriander'],mayrose:['ورد مايو','May Rose'],carrotseeds:['بذور الجزر','Carrot Seeds']};
+bourbonvanilla:['فانيليا بوربون','Bourbon Vanilla'],ambroxan:['أمبروكسan','Ambroxan'],tangerine:['يوسفي','Tangerine'],calabrianbergamot:['برجموت كالابريا','Calabrian Bergamot'],sicilianorange:['برتقال صقلي','Sicilian Orange'],sicilianlemon:['ليمون صقلي','Sicilian Lemon'],nigerianginger:['زنجبيل نيجيري','Nigerian Ginger'],tunisianneroli:['نيرولي تونسي','Tunisian Neroli'],ceyloncinnamon:['قرفة سيلان','Ceylon Cinnamon'],chineseblacktea:['شاي أسود صيني','Chinese Black Tea'],olibanum:['لبان','Olibanum'],sicilianbergamot:['برجموت صقلي','Sicilian Bergamot'],agarwood:['عود','Agarwood (Oud)'],haitianvetiver:['فيتيفر هايتي','Haitian Vetiver'],isoesuper:['آيزو إي سوبر','Iso E Super'],mandarinorange:['برتقال يوسفي','Mandarin Orange'],tunisianorangeblossom:['زهر البرتقال التونسي','Tunisian Orange Blossom'],jasminesambac:['ياسمين سمبك','Jasmine Sambac'],madagascarvanilla:['فانيليا مدغشقر','Madagascar Vanilla'],orris:['جذور السوسن','Orris'],bulgarianrose:['ورد بلغاري','Bulgarian Rose'],cacao:['كاكاو','Cacao'],cashmerewood:['خشب الكشمير','Cashmere Wood'],vanillacaviar:['كافيار الفانيليا','Vanilla Caviar'],vanillaabsolute:['خلاصة الفانيليا','Vanilla Absolute'],italianmandarin:['يوسفي إيطالي','Italian Mandarin'],italianbergamot:['برجموت إيطالي','Italian Bergamot'],turkishrose:['ورد تركي','Turkish Rose'],moroccanorangeblossom:['زهر البرتقال المغربي','Moroccan Orange Blossom'],solarnotes:['نوتات شمسية','Solar Notes'],mahonial:['ماهونيال','Mahonial'],myrrh:['مُر','Myrrh'],coriander:['كزبرة','Coriander'],mayrose:['ورد مايو','May Rose'],carrotseeds:['بذور الجزر','Carrot Seeds']};
+
 const NOTES={
 3:[['bergamot','cardamom','orangeblossom','cinnamon'],['bourbonvanilla','elemi'],['praline','musk','ambroxan','guaiac']],
 8:[['cardamom','tangerine','bergamot'],['lavender','sage','violetleaf'],['benzoin','cedar','patchouli']],
@@ -244,7 +272,7 @@ const NOTES={
 32:[['jasmine','saffron'],['amberwood','ambergris'],['fir','cedar']],
 102:[['sicilianorange','calabrianbergamot','sicilianlemon'],['fruits'],['whitemusk','madagascarvanilla','amber']],
 103:[['citron','orange','mint','lemon','blackcurrant','coriander'],['apricot','basil','mayrose','carrotseeds'],['fig','dates','ambrette']]};
-// Customer reviews. ar = the original text exactly as the customer wrote it, en = the English translation. Add or remove entries here.
+
 const REVIEWS=[
 {ar:"يجماعة المسك تحفةةة ، وريحته ثابتة اوي وفنفس الوقت مش فواحة الي هو بزيادة ، فواحة على قد الي يقرب مني \"الي عايز يقدر يزود وهتبقى فواحة اكتر\" ف هي بجد تحفة ، والريحة خطيرة مشعارفة ازاي اوصفها بس ريحتها نظافة مع ورود وكيك حاجة كدة ، تسلم ايدكم بجد واستمرو فالتقدم للامام ، متاكدة انكم بالمستوى دا هتوصلو للعالمية قريب مش بعيد💗💗 \"اخدت المسك الفاتح مش الطهارة ، الي لونه مشمشي تقريبا\"",en:"You guys, the musk is a masterpiece!!! The scent really lasts, but at the same time it isn’t over the top. It projects just enough for whoever comes close to me (“if you want more, you can spray more and it’ll be stronger”). Honestly it’s a masterpiece, and the smell is wild, I don’t even know how to describe it, but it smells clean, like roses and cake or something. Thank you so much, and keep moving forward. I’m sure that at this level you’ll be going global soon, not far off at all 💗💗 “I got the light musk, not the Tahara one, the apricot-colored one, I think.”"},
 {ar:"العطر حلو جدا  وثابته حلو وحتى بمشي او بقعد مع اي حد بيقولي عطرك منين وتقريبا اغلب صاحبي هيستنو يرجعو من الاجازه عشان يشترو منكم الله يوفقكم ويسعدكم  شغلكم حلو جدا وعندكم ضمير",en:"The perfume is really nice and it lasts. Whether I’m walking or sitting with someone, people keep asking me where my perfume is from, and most of my friends are waiting until they’re back from vacation to buy from you. May God bless you and make you happy. Your work is really good and you’re honest people."},
@@ -252,13 +280,17 @@ const REVIEWS=[
 {ar:"المهم الثبات 10/10\nالفوحان مابين معي منيح\nالتطابق 90% \nعجبني برضو القنينة فخمة جدا هيه والملصق وكأنه شي براند فرنسي 👌🏻👌🏻👌🏻❤️❤️❤️",en:"What matters: longevity 10/10\nProjection: somewhere between okay and good\nMatch: 90%\nI also loved the bottle, it looks really luxurious, and the label makes it look like a French brand 👌🏻👌🏻👌🏻❤️❤️❤️"},
 {ar:"مراحب شباب العطر الصراحه ثابت وريحتو لسا بأيدي من مبارح يعني عنجد يسلم اديكو يا غوالي وانشاءالله الجايات احسن ان شاء الله بتوفيق يارب 🤍",en:"Hey guys, honestly the perfume really lasts, I can still smell it on my hand from yesterday. Seriously, well done, my dear friends, and God willing the next ones will be even better. Wishing you every success 🤍"},
 {ar:"100/10 بجد تحفه أنا في الطبيعي مش بحب أي برفان بس ده بجد رهيب تسلم ايديكم",en:"100/10, honestly a masterpiece. I normally don’t like any perfume, but this one is seriously amazing. Well done, thank you!"}];
+
 const L={
 ar:{dir:'rtl',title:'نوفيرا للعطور',sw:'EN',n1:'التشكيلة',n2:'آراء العملاء',n3:'تواصل معانا',ct:'السلة',ct2:'سلتك',
 h1:'اتعمل عشان حضورك',hp:'ريحة ناعمة وفخمة، بتحسسك بالرقي كل يوم.',cta:'شوف التشكيلة',
 sh:'التشكيلة',ss:'اختار القسم، دوس على العطر تشوف تفاصيله، واطلب على واتساب.',rh:'آراء العملاء',
-tot:'الإجمالي',wa:'اطلب على واتساب',ft:'© 2026 نوفيرا للعطور. كل المنتجات صنع في تركيا.',
-all:'الكل',cats:{m:'رجالي',w:'حريمي',u:'للجنسين'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',
-empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',rp0:'شغّل عرض الآراء',rp1:'وقّف عرض الآراء',more:c=>`كمان في قسم ${c}`,
+tot:'الإجمالي',wa:'اطلب على واتساب',ft:'© 2026 نوفيرا للعطور. كل المنتجات مصنوعه في تركيا.',
+all:'الكل',cats:{m:'رجالي',w:'حريمي',u:'للجنسين',o:'أخرى'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',
+empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',szt:'الحجم: 6 × 3 مل (~40 بخة لكل عطر)',rp0:'شغّل عرض الآراء',rp1:'وقّف عرض الآراء',more:c=>`كمان في قسم ${c}`,
+choose:'اختار العطور',tpTitle:'اختار 6 عطور من التشكيلة',tpCount:(s,m)=>`تم اختيار ${s} من ${m}`,
+tpMen:'ترشيحنا للرجال',tpWomen:'ترشيحنا للنساء',tpCustom:' اختيار يدوي',
+tpEmpty:'+ عطر فارغ',tpAddBtn:s=>s===6?'ضيف الـ 6 عطور للسلة':`اختار 6 عطور (متبقي ${6-s})`,
 def:'ريحة مميزة من نوفيرا، غنية وناعمة وسهل تلبسها كل يوم. صنع في تركيا.',
 rv:REVIEWS.map(r=>({t:r.ar})),
 m1:l=>`أهلاً 👋 ممكن أطلب ${l} ✨`,mN:l=>`أهلاً 👋\n\nممكن أطلب:\n${l.map(x=>'✨ '+x).join('\n')}`,
@@ -267,24 +299,38 @@ en:{dir:'ltr',title:'Nuveira Perfumes',sw:'عربي',n1:'Shop',n2:'Reviews',n3:'
 h1:'Crafted for presence',hp:'Elegant scents with depth, softness, and character, made to feel luxurious every day.',cta:'Shop the collection',
 sh:'The collection',ss:'Pick a category, tap a perfume for details, and order on WhatsApp.',rh:'What customers say',
 tot:'Total',wa:'Order on WhatsApp',ft:'© 2026 Nuveira Perfumes. All products are made in Turkey.',
-all:'All',cats:{m:"Men's",w:"Women's",u:'Unisex'},add:'Add to cart',done:'Added',x:'Close',
-empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',rp0:'Play reviews slideshow',rp1:'Pause reviews slideshow',more:c=>`More ${c} fragrances`,
+all:'All',cats:{m:"Men's",w:"Women's",u:'Unisex',o:'Other'},add:'Add to cart',done:'Added',x:'Close',
+empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',szt:'Size: 6 × 3 ml (~40 sprays each)',rp0:'Play reviews slideshow',rp1:'Pause reviews slideshow',more:c=>`More ${c} fragrances`,
+choose:'Choose Perfumes',tpTitle:'Choose 6 perfumes from the collection',tpCount:(s,m)=>`${s} of ${m} selected`,
+tpMen:'Curated for Men',tpWomen:'Curated for Women',tpCustom:'Custom Choice',
+tpEmpty:'+ Empty slot',tpAddBtn:s=>s===6?'Add 6 Testers to Cart':`Select 6 testers (${6-s} left)`,
 def:'A Nuveira signature, rich, smooth and effortlessly wearable. Made in Turkey.',
 rv:REVIEWS.map(r=>({t:r.en})),
 m1:l=>`Hello Nuveira! 👋 I would like to order ${l} ✨`,mN:l=>`Hello Nuveira! 👋\n\nI would like to order:\n${l.map(x=>'✨ '+x).join('\n')}`,
 me:t=>`\n\nTotal: ${t} 💛\nCould you let me know the next steps for payment and delivery? Thank you so much! 🙏`}};
-// ======================
 
 const $=s=>document.querySelector(s);
 const num=n=>n.toFixed(2)+' ₺';
 const money=n=>`<bdi>${num(n)}</bdi>`;
 const find=id=>P.find(p=>p.id==id);
-const IMG={3:'thair',8:'royal-elixir',38:'aura-mirage',37:'avenor',11:'midnight-aria',40:'crown-elixir',20:'night-pulse',27:'lumora',4:'ice-vanilla',5:'berry-goodness',28:'impadore',101:'imperium',2:'diplomatic-oud',7:'sucre-lutf',30:'sucre-latte',10:'noir-leather',32:'rouge-elixir',102:'mango-bloom',103:'tropical-elixir'};
+const IMG={200:'testers',3:'thair',8:'royal-elixir',38:'aura-mirage',37:'avenor',11:'midnight-aria',40:'crown-elixir',20:'night-pulse',27:'lumora',4:'ice-vanilla',5:'berry-goodness',28:'impadore',101:'imperium',2:'diplomatic-oud',7:'sucre-lutf',30:'sucre-latte',10:'noir-leather',32:'rouge-elixir',102:'mango-bloom',103:'tropical-elixir'};
 const odoo=(p,z)=>`https://nuveira.odoo.com/web/image/product.product/${p.id}/image_${z}`;
-const ph=(p,tag,a='',z=512)=>{const l=IMG[p.id];return`<${tag} class="ph" ${a}><img src="${l?`img/${l}${z>512?'':'-sm'}.webp`:odoo(p,z)}" ${l?`data-o="${odoo(p,z)}" `:''}width="800" height="1000" alt="${p.name}" loading="lazy" onerror="if(this.dataset.o&&!this.dataset.f){this.dataset.f=1;this.src=this.dataset.o}else this.remove()"></${tag}>`};
-let lang='ar',cat='all',qty=1,cart={};
-try{cart=JSON.parse(localStorage.getItem('nv')||'{}')}catch(e){}
-Object.keys(cart).forEach(k=>{if(!find(k))delete cart[k]});
+
+const ph=(p,tag,a='',z=512)=>{
+  const l=IMG[p.id];
+  return `<${tag} class="ph" ${a}><img src="${l?`img/${l}${z>512?'':'-sm'}.webp`:odoo(p,z)}" ${l?`data-o="${odoo(p,z)}" `:''}width="800" height="1000" alt="${p.name}" loading="lazy" onerror="if(this.dataset.o&&!this.dataset.f){this.dataset.f=1;this.src=this.dataset.o}else this.remove()"></${tag}>`;
+};
+
+let lang='ar',cat='all',qty=1,cart={},selTesters=[],activeDetailId=null;
+try{
+  const raw=JSON.parse(localStorage.getItem('nv')||'{}');
+  Object.keys(raw).forEach(k=>{
+    const it=raw[k];
+    if(typeof it==='number'){if(find(k))cart[k]={id:+k,q:it}}
+    else if(it&&it.id&&find(it.id)){cart[k]=it}
+  });
+}catch(e){}
+
 $('#tt').href=TT;$('#ig').href=IG;$('#wl').href='https://wa.me/'+WA;
 const hs=$('.soc').cloneNode(true);hs.className='hsoc';hs.querySelectorAll('[id]').forEach(a=>a.removeAttribute('id'));$('.act').prepend(hs);
 document.documentElement.classList.add('js');
@@ -292,7 +338,7 @@ const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEac
 const reveal=els=>els.forEach((el,i)=>{if(!io)return;el.classList.add('rv');el.style.setProperty('--i',i%3);io.observe(el)});
 addEventListener('scroll',()=>$('.top').classList.toggle('s',scrollY>20),{passive:true});
 
-const card=p=>`<article class="card">${ph(p,'button',`data-open="${p.id}" aria-label="${p.name}"`)}<div class="body"><h3><button data-open="${p.id}"><bdi>${p.name}</bdi></button></h3><span class="cat">${L[lang].cats[p.c]}</span><span class="price">${money(p.price)}</span><button class="add" data-add="${p.id}">${L[lang].add}</button></div></article>`;
+const card=p=>`<article class="card">${ph(p,'button',`data-open="${p.id}" aria-label="${p.name}"`)}<div class="body"><h3><button data-open="${p.id}"><bdi>${p.id===200?(lang==='ar'?'مجموعة العينات':'Discovery Set'):p.name}</bdi></button></h3><span class="cat">${L[lang].cats[p.c]}</span><span class="price">${money(p.price)}</span>${p.id===200?`<button class="add" data-open="${p.id}">${L[lang].choose}</button>`:`<button class="add" data-add="${p.id}">${L[lang].add}</button>`}</div></article>`;
 
 function drawShop(){
   const T=L[lang];
@@ -300,38 +346,110 @@ function drawShop(){
   $('#grid').innerHTML=P.filter(p=>cat=='all'||p.c==cat).map(card).join('');
   reveal([...$('#grid').children]);
 }
+
 function notes(p,T){
+  if(p.id===200)return '';
   const n=NOTES[p.id],i=lang=='ar'?0:1;
   return `<div class="notes"><h3>${T.nm}</h3>${[T.nt,T.nh,T.nb].map((l,k)=>`<div class="tier"><span class="tl"><i style="opacity:${[1,.65,.35][k]}"></i>${l}</span><div class="chips">${n?n[k].filter(x=>NT[x]).map(x=>`<span class="chip">${NT[x][i]}</span>`).join(''):'<span class="soon">—</span>'}</div></div>`).join('')}${n?'':`<p class="soon" style="margin-top:8px">${T.soon}</p>`}</div>`;
 }
-function openDetail(id){
-  const p=find(id),T=L[lang],d=$('#detail');qty=1;
-  const rel=P.filter(x=>x.c==p.c&&x.id!=p.id);
-  d.innerHTML=`<button class="close" data-close aria-label="${T.x}">×</button><div class="wrap"><div class="detail">${ph(p,'div','',1024)}<div><h2><bdi>${p.name}</bdi></h2><span class="cat">${T.cats[p.c]}</span><div class="price">${money(p.price)}</div><div class="size">${T.sz}</div><p>${(DESC[p.id]||{})[lang]||T.def}</p><div class="row"><div class="qty"><button data-q="-1">−</button><span id="q">1</span><button data-q="1">+</button></div><button class="btn" data-addq="${p.id}">${T.add}</button></div>${notes(p,T)}</div></div><h2 style="font-size:clamp(24px,6.5vw,34px);margin-bottom:18px">${T.more(T.cats[p.c])}</h2><div class="grid" style="padding-bottom:70px">${rel.map(card).join('')}</div></div>`;
-  if(!d.classList.contains('open'))push();d.classList.add('open');d.scrollTop=0;document.body.style.overflow='hidden';d.querySelector('.close').focus();
+
+function renderTesterPicker(){
+  const box=$('#tp-box');if(!box)return;
+  const T=L[lang];
+  const allPerfumes=P.filter(x=>x.id!==200);
+  const slotsHtml=Array.from({length:6},(_,i)=>{
+    const pid=selTesters[i],p=pid?find(pid):null;
+    return `<div class="tslot ${p?'filled':''}"><span>${p?p.name:T.tpEmpty}</span>${p?`<button type="button" data-tprem="${p.id}" aria-label="Remove">×</button>`:''}</div>`;
+  }).join('');
+
+  const gridHtml=allPerfumes.map(p=>{
+    const sel=selTesters.includes(p.id);
+    const dis=!sel&&selTesters.length>=6;
+    return `<button type="button" class="titem ${sel?'sel':''} ${dis?'dis':''}" data-tptog="${p.id}"><b>${p.name}</b><span class="tc">${T.cats[p.c]}</span></button>`;
+  }).join('');
+
+  const isMen=selTesters.length===6&&PRESET_MEN.every(x=>selTesters.includes(x));
+  const isWomen=selTesters.length===6&&PRESET_WOMEN.every(x=>selTesters.includes(x));
+  const isCustom=!isMen&&!isWomen;
+
+  box.innerHTML=`<div class="tbox-head"><span class="tbox-title">${T.tpTitle}</span><span class="tbox-count">${T.tpCount(selTesters.length,6)}</span></div>
+  <div class="tpresets">
+    <button type="button" class="tpreset ${isCustom?'active':''}" data-tpset="c">${T.tpCustom}</button>
+    <button type="button" class="tpreset ${isMen?'active':''}" data-tpset="m">${T.tpMen}</button>
+    <button type="button" class="tpreset ${isWomen?'active':''}" data-tpset="w">${T.tpWomen}</button>
+  </div>
+  <div class="tslots">${slotsHtml}</div>
+  <div class="tgrid">${gridHtml}</div>`;
+
+  const addBtn=$('#t-addbtn');
+  if(addBtn){
+    addBtn.disabled=selTesters.length!==6;
+    addBtn.style.opacity=selTesters.length===6?'1':'.5';
+    addBtn.textContent=T.tpAddBtn(selTesters.length);
+  }
 }
+
+function openDetail(id,isLangChange=false){
+  activeDetailId=+id;
+  const p=find(id),T=L[lang],d=$('#detail');
+  if(!isLangChange)qty=1;
+  const isTester=p.id===200;
+
+  const rel=P.filter(x=>x.c==p.c&&x.id!=p.id);
+  const title=isTester?(lang==='ar'?'مجموعة العينات (Discovery Set)':'Discovery Set (6 Testers)'):p.name;
+  const sizeText=isTester?T.szt:T.sz;
+
+  d.innerHTML=`<button class="close" data-close aria-label="${T.x}">×</button><div class="wrap"><div class="detail">${ph(p,'div','',1024)}<div><h2><bdi>${title}</bdi></h2><span class="cat">${T.cats[p.c]}</span><div class="price">${money(p.price)}</div><div class="size">${sizeText}</div><p>${(DESC[p.id]||{})[lang]||T.def}</p>
+  ${isTester?`<div class="tbox" id="tp-box"></div><div class="row" style="margin-top:20px"><div class="qty"><button data-q="-1">−</button><span id="q">${qty}</span><button data-q="1">+</button></div><button class="btn" id="t-addbtn" data-addtesters="1">${T.tpAddBtn(selTesters.length)}</button></div>`:
+  `<div class="row"><div class="qty"><button data-q="-1">−</button><span id="q">${qty}</span><button data-q="1">+</button></div><button class="btn" data-addq="${p.id}">${T.add}</button></div>${notes(p,T)}`}
+  </div></div>${rel.length?`<h2 style="font-size:clamp(24px,6.5vw,34px);margin-bottom:18px">${T.more(T.cats[p.c])}</h2><div class="grid" style="padding-bottom:70px">${rel.map(card).join('')}</div>`:'<div style="padding-bottom:40px"></div>'}</div>`;
+
+  if(isTester)renderTesterPicker();
+
+  if(!isLangChange&&!d.classList.contains('open'))push();
+  d.classList.add('open');
+  if(!isLangChange){
+    d.scrollTop=0;
+    d.querySelector('.close').focus();
+  }
+  document.body.style.overflow='hidden';
+}
+
 let hd=0;
 const push=()=>{history.pushState({nv:1},'');hd++};
 const isOpen=id=>$(id).classList.contains('open');
-function closeDetail(){$('#detail').classList.remove('open');document.body.style.overflow=isOpen('#drawer')?'hidden':''}
+function closeDetail(){activeDetailId=null;$('#detail').classList.remove('open');document.body.style.overflow=isOpen('#drawer')?'hidden':''}
 function cartOpen(o){if(o&&!isOpen('#drawer'))push();$('#drawer').classList.toggle('open',o);$('#shade').classList.toggle('open',o);document.body.style.overflow=o||isOpen('#detail')?'hidden':''}
 function hideTop(){if(isOpen('#drawer'))cartOpen(false);else closeDetail()}
 function closeTop(){if(!isOpen('#drawer')&&!isOpen('#detail'))return;hd?history.back():hideTop()}
 addEventListener('popstate',()=>{hd=Math.max(0,hd-1);hideTop()});
 
 function drawCart(){
-  const T=L[lang],ids=Object.keys(cart),lines=[];let n=0,tot=0;
-  $('#items').innerHTML=ids.length?ids.map(id=>{
-    const p=find(id),q=cart[id];n+=q;tot+=q*p.price;lines.push(q>1?`${q}x ${p.name}`:p.name);
-    return `<div class="item"><div class="n"><div><bdi>${p.name}</bdi></div><small>${money(p.price)}</small></div><div class="qty"><button data-dec="${id}">−</button><span>${q}</span><button data-inc="${id}">+</button></div></div>`;
+  const T=L[lang],keys=Object.keys(cart),lines=[];let n=0,tot=0;
+  $('#items').innerHTML=keys.length?keys.map(k=>{
+    const it=cart[k],p=find(it.id);if(!p)return '';
+    const q=it.q;n+=q;tot+=q*p.price;
+    const isT=it.id===200&&it.items;
+    const pTitle=it.id===200?(lang==='ar'?'مجموعة العينات (6 عطور)':'Discovery Set (6 Testers)'):p.name;
+    const itemsSub=isT?it.items.map(id=>(find(id)||{}).name).filter(Boolean).join(', '):'';
+    
+    if(isT){
+      lines.push(`${q>1?`${q}x `:''}${pTitle}\n${it.items.map(id=>'   • '+(find(id)||{}).name).join('\n')}`);
+    }else{
+      lines.push(q>1?`${q}x ${p.name}`:p.name);
+    }
+
+    return `<div class="item"><div class="n"><div><bdi>${pTitle}</bdi></div>${itemsSub?`<span class="subt">${itemsSub}</span>`:''}<small>${money(p.price)}</small></div><div class="qty"><button data-dec="${k}">−</button><span>${q}</span><button data-inc="${k}">+</button></div></div>`;
   }).join(''):`<p class="empty">${T.empty}</p>`;
+
   $('#count').textContent=n;$('#count').hidden=!n;$('#tot').innerHTML=money(tot);
   const wa=$('#wa');wa.style.display=n?'block':'none';
   const m=(lines.length==1?T.m1(lines[0]):T.mN(lines))+T.me(num(tot));
   wa.href=`https://wa.me/${WA}?text=${encodeURIComponent(m)}`;
   try{localStorage.setItem('nv',JSON.stringify(cart))}catch(e){}
 }
-const SPEED=38; // review slideshow speed, pixels per second
+
+const SPEED=38;
 let revStrip=matchMedia('(prefers-reduced-motion:reduce)').matches,revHold=false;
 function revSync(){
   const m=$('#rev .marq'),b=$('#rp');if(!m||!b)return;
@@ -369,24 +487,49 @@ function render(){
   document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T[e.dataset.t]);
   drawRev();
   drawShop();drawCart();
+  if(activeDetailId!==null&&isOpen('#detail')){
+    openDetail(activeDetailId,true);
+  }
 }
-const add=(id,q)=>{cart[id]=(cart[id]||0)+q;drawCart();const b=$('#count');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')};
+
+const add=(id,q,items=null)=>{
+  const k=items?`${id}_${items.slice().sort().join('-')}`:`${id}`;
+  if(cart[k])cart[k].q+=q;
+  else cart[k]={id,q,items:items?[...items]:null};
+  drawCart();
+  const b=$('#count');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');
+};
 
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
   const d=t.dataset;
-  if(d.open)openDetail(d.open);
+  if(d.open)openDetail(+d.open);
   else if(d.add){add(+d.add,1);const o=t.textContent;t.textContent=L[lang].done;setTimeout(()=>t.textContent=o,900)}
   else if(d.addq){add(+d.addq,qty);cartOpen(true)}
+  else if(d.addtesters){if(selTesters.length===6){add(200,qty,selTesters);cartOpen(true)}}
+  else if(d.tpset){
+    if(d.tpset==='m')selTesters=[...PRESET_MEN];
+    else if(d.tpset==='w')selTesters=[...PRESET_WOMEN];
+    else if(d.tpset==='c')selTesters=[];
+    renderTesterPicker();
+  }
+  else if(d.tprem){selTesters=selTesters.filter(x=>x!==+d.tprem);renderTesterPicker()}
+  else if(d.tptog){
+    const pid=+d.tptog;
+    if(selTesters.includes(pid))selTesters=selTesters.filter(x=>x!==pid);
+    else if(selTesters.length<6)selTesters.push(pid);
+    renderTesterPicker();
+  }
   else if(d.q){qty=Math.max(1,qty+ +d.q);$('#q').textContent=qty}
   else if(d.cat){cat=d.cat;drawShop()}
-  else if(d.inc)add(+d.inc,1);
-  else if(d.dec){cart[d.dec]--;if(cart[d.dec]<1)delete cart[d.dec];drawCart()}
+  else if(d.inc){if(cart[d.inc]){cart[d.inc].q++;drawCart()}}
+  else if(d.dec){if(cart[d.dec]){cart[d.dec].q--;if(cart[d.dec].q<1)delete cart[d.dec];drawCart()}}
   else if('close' in d)closeTop();
   else if('closecart' in d)closeTop();
   else if(t.id=='openCart')cartOpen(true);
   else if(t.id=='lang'){lang=lang=='ar'?'en':'ar';render()}
 });
+
 $('#shade').onclick=closeTop;
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeTop()});
 render();
