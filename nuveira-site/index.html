@@ -50,8 +50,8 @@ h2{font-size:clamp(30px,5vw,46px);color:var(--text);margin-bottom:6px}
 .cat{font-size:14px;color:var(--mute)}
 .price{color:var(--gold)}
 .add{margin-top:10px;border:1px solid #444;color:var(--text);padding:6px;border-radius:8px;text-align:center}
-#reviews{overflow:hidden}
-.rev{margin:28px calc(50% - 50vw) 0}
+#reviews{overflow:hidden;position:relative}
+.rev{margin-top:28px;width:100%;overflow:hidden}
 footer{background:var(--panel);border-top:1px solid var(--line);padding:56px 0;text-align:center}
 .soc{display:flex;gap:16px;justify-content:center;margin:22px 0}
 .soc a{width:46px;height:46px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--text)}
@@ -153,15 +153,15 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .marq::before,.marq::after{content:"";position:absolute;top:0;bottom:0;width:6%;z-index:2;pointer-events:none}
 .marq::before{left:0;background:linear-gradient(to right,var(--panel),transparent)}
 .marq::after{right:0;background:linear-gradient(to left,var(--panel),transparent)}
-.track{display:flex;align-items:center;gap:20px;padding-right:20px;width:max-content;will-change:transform;animation:revslide var(--d,60s) linear infinite}
-@keyframes revslide{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.track{display:flex;align-items:center;width:max-content;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;animation:revslide var(--d,60s) linear infinite}
+@keyframes revslide{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
 .marq.hold .track,.marq.tp .track,.marq:focus-visible .track{animation-play-state:paused}
 @media(hover:hover) and (pointer:fine){.marq:hover .track{animation-play-state:paused}}
-.track>blockquote{flex:0 0 380px;margin:0;padding:22px 24px;background:var(--g2);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:14px}
+.track>blockquote{flex:0 0 380px;width:380px;max-width:380px;margin:0 20px 0 0;padding:22px 24px;background:var(--g2);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:14px;-webkit-backface-visibility:hidden;backface-visibility:hidden}
 [dir=rtl] .track>blockquote{direction:rtl}
 .track p{white-space:pre-line;font-size:15px;line-height:1.9}
-@media(max-width:560px){.track>blockquote{flex-basis:min(82vw,340px)}}
-.marq.strip{overflow-x:auto}
+@media(max-width:560px){.track>blockquote{flex:0 0 min(82vw,340px);width:min(82vw,340px);max-width:min(82vw,340px)}}
+.marq.strip{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .marq.strip .track{animation:none;will-change:auto}
 .marq.strip .cl,.marq.strip::before,.marq.strip::after{display:none}
 #reviews .wrap{position:relative}
@@ -183,7 +183,7 @@ heroSrc();
 </script><button class="vp" id="vp" type="button" aria-label=""><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button><div class="wrap"><h1 data-t="h1"></h1><p data-t="hp"></p><a class="btn" href="#shop" data-t="cta"></a></div></div>
 <section id="shop"><div class="wrap"><h2 data-t="sh"></h2><p class="sub" data-t="ss"></p>
 <div class="tabs" id="tabs"></div><div class="grid" id="grid"></div></div></section>
-<section id="reviews" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap"><h2 data-t="rh"></h2><div class="rev" id="rev"></div></div></section>
+<section id="reviews" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap"><h2 data-t="rh"></h2><button class="rp" id="rp" type="button"><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button></div><div class="rev" id="rev"></div></section>
 </main>
 <footer id="contact"><div class="wrap"><div class="logo">Nuveira</div>
 <div class="soc">
@@ -275,8 +275,6 @@ const $=s=>document.querySelector(s);
 const num=n=>n.toFixed(2)+' ₺';
 const money=n=>`<bdi>${num(n)}</bdi>`;
 const find=id=>P.find(p=>p.id==id);
-// Your own product photos: perfume id -> file name in the img folder (img/<name>.webp for the perfume page, img/<name>-sm.webp for the cards).
-// Perfumes not listed here still load their photo from the old Odoo shop. If a local file is missing, the Odoo photo is used instead.
 const IMG={3:'thair',8:'royal-elixir',38:'aura-mirage',37:'avenor',11:'midnight-aria',40:'crown-elixir',20:'night-pulse',27:'lumora',4:'ice-vanilla',5:'berry-goodness',28:'impadore',101:'imperium',2:'diplomatic-oud',7:'sucre-lutf',30:'sucre-latte',10:'noir-leather',32:'rouge-elixir',102:'mango-bloom',103:'tropical-elixir'};
 const odoo=(p,z)=>`https://nuveira.odoo.com/web/image/product.product/${p.id}/image_${z}`;
 const ph=(p,tag,a='',z=512)=>{const l=IMG[p.id];return`<${tag} class="ph" ${a}><img src="${l?`img/${l}${z>512?'':'-sm'}.webp`:odoo(p,z)}" ${l?`data-o="${odoo(p,z)}" `:''}width="800" height="1000" alt="${p.name}" loading="lazy" onerror="if(this.dataset.o&&!this.dataset.f){this.dataset.f=1;this.src=this.dataset.o}else this.remove()"></${tag}>`};
@@ -331,21 +329,36 @@ function drawCart(){
 }
 const SPEED=38; // review slideshow speed, pixels per second
 let revStrip=matchMedia('(prefers-reduced-motion:reduce)').matches,revHold=false;
-function revSync(){const m=$('#rev .marq'),b=$('#rp');if(!m||!b)return;const off=revStrip||revHold;m.classList.toggle('strip',revStrip);m.classList.toggle('hold',revHold&&!revStrip);b.toggleAttribute('data-p',off);b.setAttribute('aria-label',L[lang][off?'rp0':'rp1'])}
+function revSync(){
+  const m=$('#rev .marq'),b=$('#rp');if(!m||!b)return;
+  const off=revStrip||revHold;
+  m.classList.toggle('strip',revStrip);
+  m.classList.toggle('hold',revHold&&!revStrip);
+  b.toggleAttribute('data-p',off);
+  b.setAttribute('aria-label',L[lang][off?'rp0':'rp1']);
+}
 function drawRev(){
   const T=L[lang],box=$('#rev');if(!T.rv.length){box.innerHTML='';return}
   const card=r=>`<blockquote><p>${r.t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</p></blockquote>`;
   const real=T.rv.map(card).join('');
-  box.innerHTML=`<button class="rp" id="rp" type="button"><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button><div class="marq" tabindex="0" role="region" aria-label="${T.rh}"><div class="track">${real}</div></div>`;
-  const m=$('#rev .marq'),tr=m.firstChild,n=T.rv.length,unit=tr.children[0].offsetWidth+20,k=Math.max(1,Math.ceil(m.clientWidth/(n*unit)));
+  box.innerHTML=`<div class="marq" tabindex="0" role="region" aria-label="${T.rh}"><div class="track">${real}</div></div>`;
+  const m=$('#rev .marq'),tr=m.firstElementChild,n=T.rv.length;
+  const firstCard=tr.firstElementChild;
+  const unit=(firstCard?firstCard.getBoundingClientRect().width:340)+20;
+  const k=Math.max(1,Math.ceil((m.clientWidth||innerWidth)/(n*unit)));
   tr.innerHTML=real+real.replace(/<blockquote>/g,'<blockquote class="cl" aria-hidden="true">').repeat(2*k-1);
   tr.style.setProperty('--d',(k*n*unit/SPEED)+'s');
   let t;m.addEventListener('touchstart',()=>{clearTimeout(t);m.classList.add('tp')},{passive:true});
   ['touchend','touchcancel'].forEach(e=>m.addEventListener(e,()=>{t=setTimeout(()=>m.classList.remove('tp'),2500)},{passive:true}));
-  $('#rp').onclick=()=>{if(revStrip){revStrip=false;revHold=false}else revHold=!revHold;revSync()};
   revSync();
 }
+const rpBtn=$('#rp');
+if(rpBtn){
+  rpBtn.onclick=()=>{if(revStrip){revStrip=false;revHold=false}else revHold=!revHold;revSync()};
+}
 let rw=innerWidth,rz;addEventListener('resize',()=>{if(innerWidth===rw)return;rw=innerWidth;clearTimeout(rz);rz=setTimeout(drawRev,300)});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawRev);
+
 function render(){
   const T=L[lang],h=document.documentElement;
   h.lang=lang;h.dir=T.dir;document.title=T.title;$('#lang').textContent=T.sw;$('#openCart').setAttribute('aria-label',T.ct);syncVp();
