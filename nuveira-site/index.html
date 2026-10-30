@@ -43,7 +43,7 @@ nav{display:flex;gap:26px;color:var(--mute);font-size:15px}
 .lang{padding:4px 14px}
 .cartbtn{position:relative;width:42px;height:42px;display:grid;place-items:center;padding:0}
 .cartbtn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.cartbtn b{position:absolute;top:-6px;inset-inline-end:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--gold);color:#000;font:600 12px/20px Cairo,sans-serif;text-align:center}
+.cartbtn b{position:absolute;top:-6px;inset-inline-end:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--gold);color:#000;font-600 12px/20px Cairo,sans-serif;text-align:center}
 .hero{min-height:calc(100svh - 64px);display:grid;place-items:center;text-align:center;padding:60px 0;position:relative;overflow:hidden;background:url(hero-poster.jpg) center/cover no-repeat,radial-gradient(circle at 88% 96%,rgba(201,162,75,.16),transparent 42%),radial-gradient(ellipse at 50% 30%,#303030 0,#000 62%)}
 .hero h1{font-size:clamp(42px,9vw,90px);font-weight:800;color:var(--text)}
 .hero p{max-width:440px;margin:18px auto 34px;color:#d4d4d4;font-size:18px}
@@ -166,11 +166,8 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 #shop>.wrap{position:relative}
 .size{display:inline-block;margin-bottom:14px;padding:1px 14px;border:1px solid var(--line);border-radius:999px;background:var(--g2);color:var(--text);font-size:14px}
 
-/* Reviews Marquee - Desktop default */
+/* Reviews Marquee - Clean, glitch-free track */
 .marq{position:relative;overflow:hidden;direction:ltr}
-.marq::before,.marq::after{content:"";position:absolute;top:0;bottom:0;width:50px;max-width:10%;z-index:2;pointer-events:none}
-.marq::before{left:0;background:linear-gradient(to right,var(--panel),transparent)}
-.marq::after{right:0;background:linear-gradient(to left,var(--panel),transparent)}
 .track{display:flex;align-items:center;width:max-content;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;animation:revslide var(--d,60s) linear infinite}
 @keyframes revslide{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 
@@ -194,11 +191,9 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 }
 .marq.touch-mode .track{
   animation:none!important;
-  will-change:scroll-position;
 }
 
 @media(max-width:560px){
-.marq::before,.marq::after{width:24px}
 .track>blockquote{flex:0 0 min(82vw,320px);width:min(82vw,320px);max-width:min(82vw,320px);margin:0 14px 0 0;padding:18px 20px}
 }
 
@@ -339,7 +334,7 @@ h1:'CRAFTED FOR PRESENCE.',hp:'Elegant scents with depth, softness, and characte
 sh:'The Collection',ss:'Pick a category, tap a perfume for details, and order on WhatsApp.',rh:'What customers say',
 tot:'Estimated Total',wa:'Order on WhatsApp',ft:'© 2026 Nuveira Perfumes. All products are made in Turkey.',
 all:'All',cats:{m:"Men's",w:"Women's",u:'Unisex',o:'Other'},add:'Add to cart',done:'Added',x:'Close',
-empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',szt:'Size: 6 × 3 ml (~40 sprays each)',more:c=>`More ${c} fragrances`,
+empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',szt:'Size: 6 × 3 مل (~40 sprays each)',more:c=>`More ${c} fragrances`,
 choose:'Choose Perfumes',tpTitle:'Choose 6 testers from the collection',tpCount:(s,m)=>`${s} of ${m} selected`,
 tpMen:"Men's Choice",tpWomen:"Women's Choice",tpCustom:'Custom Choice',
 tpEmpty:'+ Empty slot',tpAddBtn:s=>s===6?'Add 6 Testers to Cart':`Select 6 testers (${6-s} left)`,
@@ -541,6 +536,7 @@ const isTouchDevice=()=>('ontouchstart' in window||navigator.maxTouchPoints>0)&&
 function startTouchAutoscroll(m, W){
   if(touchRafId){cancelAnimationFrame(touchRafId);touchRafId=null}
   let isTouching=false,userScrolling=false,resumeTimer=null,lastTime=performance.now();
+  let pos=m.scrollLeft;
 
   m.addEventListener('touchstart',()=>{
     isTouching=true;
@@ -551,16 +547,24 @@ function startTouchAutoscroll(m, W){
   m.addEventListener('touchend',()=>{
     isTouching=false;
     clearTimeout(resumeTimer);
-    resumeTimer=setTimeout(()=>{userScrolling=false},800);
+    resumeTimer=setTimeout(()=>{
+      userScrolling=false;
+      pos=m.scrollLeft;
+    },800);
   },{passive:true});
 
   m.addEventListener('scroll',()=>{
-    if(isTouching)userScrolling=true;
+    if(isTouching){
+      userScrolling=true;
+      pos=m.scrollLeft;
+    }
     if(W>0){
       if(m.scrollLeft>=W*2){
         m.scrollLeft-=W;
+        pos=m.scrollLeft;
       }else if(m.scrollLeft<=0&&!isTouching){
         m.scrollLeft+=W;
+        pos=m.scrollLeft;
       }
     }
   },{passive:true});
@@ -570,10 +574,11 @@ function startTouchAutoscroll(m, W){
     lastTime=now;
 
     if(!isTouching&&!userScrolling&&W>0){
-      m.scrollLeft+=SPEED*dt;
-      if(m.scrollLeft>=W){
-        m.scrollLeft-=W;
+      pos+=SPEED*dt;
+      if(pos>=W*2){
+        pos-=W;
       }
+      m.scrollLeft=pos;
     }
     touchRafId=requestAnimationFrame(tick);
   }
