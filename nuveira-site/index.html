@@ -166,19 +166,39 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 #shop>.wrap{position:relative}
 .size{display:inline-block;margin-bottom:14px;padding:1px 14px;border:1px solid var(--line);border-radius:999px;background:var(--g2);color:var(--text);font-size:14px}
 
-/* Reviews Marquee - Clean, non-shifted layout */
+/* Reviews Marquee - Desktop default (unchanged) */
 .marq{position:relative;overflow:hidden;direction:ltr}
 .marq::before,.marq::after{content:"";position:absolute;top:0;bottom:0;width:50px;max-width:10%;z-index:2;pointer-events:none}
 .marq::before{left:0;background:linear-gradient(to right,var(--panel),transparent)}
 .marq::after{right:0;background:linear-gradient(to left,var(--panel),transparent)}
 .track{display:flex;align-items:center;width:max-content;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;animation:revslide var(--d,60s) linear infinite}
 @keyframes revslide{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
-/* Only pause when hold class is active from pause button */
+/* Pause when hold class is active from pause button */
 .marq.hold .track{animation-play-state:paused}
 
-.track>blockquote{flex:0 0 380px;width:380px;max-width:380px;margin:0 18px 0 0;padding:22px 24px;background:var(--g2);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:14px;-webkit-backface-visibility:hidden;backface-visibility:hidden;user-select:none}
+.track>blockquote{flex:0 0 380px;width:380px;max-width:380px;margin:0 18px 0 0;padding:22px 24px;background:var(--g2);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:14px;-webkit-backface-visibility:hidden;backface-visibility:hidden;user-select:none;-webkit-user-select:none}
 [dir=rtl] .track>blockquote{direction:rtl}
 .track p{white-space:pre-line;font-size:15px;line-height:1.9}
+
+/* Touch mode exclusively for mobile and tablet */
+.marq.touch-mode{
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  touch-action:pan-x pan-y;
+}
+.marq.touch-mode::-webkit-scrollbar{
+  display:none;
+  width:0;
+  height:0;
+}
+.marq.touch-mode .track{
+  animation:none!important;
+  will-change:scroll-position;
+}
+
 @media(max-width:560px){
 .marq::before,.marq::after{width:24px}
 .track>blockquote{flex:0 0 min(82vw,320px);width:min(82vw,320px);max-width:min(82vw,320px);margin:0 14px 0 0;padding:18px 20px}
@@ -523,6 +543,9 @@ function drawCart(){
 
 const SPEED=38;
 let revHold=false;
+let touchRafId=null;
+
+const isTouchDevice=()=>('ontouchstart' in window||navigator.maxTouchPoints>0)&&(window.matchMedia('(pointer: coarse)').matches||window.matchMedia('(max-width:1024px)').matches);
 
 function revSync(){
   const m=$('#rev .marq'),b=$('#rp');if(!m||!b)return;
@@ -531,20 +554,76 @@ function revSync(){
   b.setAttribute('aria-label',L[lang][revHold?'rp0':'rp1']);
 }
 
+function startTouchAutoscroll(m, W){
+  if(touchRafId){cancelAnimationFrame(touchRafId);touchRafId=null}
+  let isTouching=false,userScrolling=false,resumeTimer=null,lastTime=performance.now();
+
+  m.addEventListener('touchstart',()=>{
+    isTouching=true;
+    userScrolling=true;
+    clearTimeout(resumeTimer);
+  },{passive:true});
+
+  m.addEventListener('touchend',()=>{
+    isTouching=false;
+    clearTimeout(resumeTimer);
+    resumeTimer=setTimeout(()=>{userScrolling=false},1200);
+  },{passive:true});
+
+  m.addEventListener('scroll',()=>{
+    if(isTouching)userScrolling=true;
+    if(W>0){
+      if(m.scrollLeft>=W*2){
+        m.scrollLeft-=W;
+      }else if(m.scrollLeft<=0&&!isTouching){
+        m.scrollLeft+=W;
+      }
+    }
+  },{passive:true});
+
+  function tick(now){
+    const dt=Math.min((now-lastTime)/1000,0.1);
+    lastTime=now;
+
+    if(!revHold&&!isTouching&&!userScrolling&&W>0){
+      m.scrollLeft+=SPEED*dt;
+      if(m.scrollLeft>=W){
+        m.scrollLeft-=W;
+      }
+    }
+    touchRafId=requestAnimationFrame(tick);
+  }
+  touchRafId=requestAnimationFrame(tick);
+}
+
 function drawRev(){
   const T=L[lang],box=$('#rev');if(!T.rv.length){box.innerHTML='';return}
+  if(touchRafId){cancelAnimationFrame(touchRafId);touchRafId=null}
+
   const card=r=>`<blockquote><p>${esc(r.t)}</p></blockquote>`;
   const real=T.rv.map(card).join('');
   box.innerHTML=`<div class="marq" role="region" aria-label="${esc(T.rh)}"><div class="track">${real}</div></div>`;
   const m=$('#rev .marq'),tr=m.firstElementChild,n=T.rv.length;
   const firstCard=tr.firstElementChild;
   if(!firstCard)return;
+
   const cs=getComputedStyle(firstCard);
   const mr=parseFloat(cs.marginRight)||18;
   const unit=firstCard.getBoundingClientRect().width+mr;
-  const k=Math.max(1,Math.ceil((m.clientWidth||innerWidth)/(n*unit)));
+  const isTouch=isTouchDevice();
+
+  // Multiplier ensures ample content buffer across screens
+  const k=Math.max(isTouch?2:1,Math.ceil((m.clientWidth||innerWidth)/(n*unit)));
   tr.innerHTML=real+real.replace(/<blockquote>/g,'<blockquote class="cl" aria-hidden="true">').repeat(2*k-1);
-  tr.style.setProperty('--d',(k*n*unit/SPEED)+'s');
+
+  if(isTouch){
+    m.classList.add('touch-mode');
+    startTouchAutoscroll(m,n*unit);
+  }else{
+    m.classList.remove('touch-mode');
+    tr.style.setProperty('--d',(k*n*unit/SPEED)+'s');
+  }
+
   revSync();
 }
 
