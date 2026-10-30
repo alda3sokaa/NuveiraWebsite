@@ -166,15 +166,13 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 #shop>.wrap{position:relative}
 .size{display:inline-block;margin-bottom:14px;padding:1px 14px;border:1px solid var(--line);border-radius:999px;background:var(--g2);color:var(--text);font-size:14px}
 
-/* Reviews Marquee - Desktop default (unchanged) */
+/* Reviews Marquee - Desktop default */
 .marq{position:relative;overflow:hidden;direction:ltr}
 .marq::before,.marq::after{content:"";position:absolute;top:0;bottom:0;width:50px;max-width:10%;z-index:2;pointer-events:none}
 .marq::before{left:0;background:linear-gradient(to right,var(--panel),transparent)}
 .marq::after{right:0;background:linear-gradient(to left,var(--panel),transparent)}
 .track{display:flex;align-items:center;width:max-content;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;animation:revslide var(--d,60s) linear infinite}
 @keyframes revslide{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
-/* Pause when hold class is active from pause button */
-.marq.hold .track{animation-play-state:paused}
 
 .track>blockquote{flex:0 0 380px;width:380px;max-width:380px;margin:0 18px 0 0;padding:22px 24px;background:var(--g2);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:14px;-webkit-backface-visibility:hidden;backface-visibility:hidden;user-select:none;-webkit-user-select:none}
 [dir=rtl] .track>blockquote{direction:rtl}
@@ -203,12 +201,6 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .marq::before,.marq::after{width:24px}
 .track>blockquote{flex:0 0 min(82vw,320px);width:min(82vw,320px);max-width:min(82vw,320px);margin:0 14px 0 0;padding:18px 20px}
 }
-#reviews .wrap{position:relative}
-.rp{position:absolute;top:10px;inset-inline-end:20px;z-index:3;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid #444;color:var(--text);transition:border-color .2s,color .2s}
-.rp:hover{border-color:var(--gold);color:var(--gold)}
-.rp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.rp .i-play,.rp[data-p] .i-pause{display:none}
-.rp[data-p] .i-play{display:block}
 
 /* Discovery Set Picker */
 .tbox{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
@@ -251,7 +243,7 @@ heroSrc();
 </script><button class="vp" id="vp" type="button" aria-label=""><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button><div class="wrap"><h1 data-t="h1"></h1><p data-t="hp"></p><a class="btn" href="#shop" data-t="cta"></a></div></div>
 <section id="shop"><div class="wrap"><h2 data-t="sh"></h2><p class="sub" data-t="ss"></p>
 <div class="tabs" id="tabs"></div><div class="grid" id="grid"></div></div></section>
-<section id="reviews" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap"><h2 data-t="rh"></h2><button class="rp" id="rp" type="button"><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button></div><div class="rev" id="rev"></div></section>
+<section id="reviews" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap"><h2 data-t="rh"></h2></div><div class="rev" id="rev"></div></section>
 </main>
 <footer id="contact"><div class="wrap"><div class="logo">Nuveira</div>
 <div class="soc">
@@ -334,7 +326,7 @@ h1:'استكشف الفخامة',hp:'ريحة ناعمة وفخمة، بتحسس
 sh:'التشكيلة',ss:'اختار القسم، دوس على العطر تشوف تفاصيله، واطلب على واتساب.',rh:'آراء العملاء',
 tot:'الإجمالي المبدئي',wa:'اطلب على واتساب',ft:'© 2026 نوفيرا للعطور. كل المنتجات مصنوعه في تركيا.',
 all:'الكل',cats:{m:'رجالي',w:'حريمي',u:'للجنسين',o:'أخرى'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',
-empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',szt:'الحجم: 6 × 3 مل (~40 بخة لكل عطر)',rp0:'شغّل عرض الآراء',rp1:'وقّف عرض الآراء',more:c=>`كمان في قسم ${c}`,
+empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',szt:'الحجم: 6 × 3 مل (~40 بخة لكل عطر)',more:c=>`كمان في قسم ${c}`,
 choose:'اختار العطور',tpTitle:'اختار 6 عينات من التشكيلة',tpCount:(s,m)=>`تم اختيار ${s} من ${m}`,
 tpMen:'المجموعه الرجاليه',tpWomen:'المجموعه النسائيه',tpCustom:'اختيار مخصص',
 tpEmpty:'+ عينة فارغة',tpAddBtn:s=>s===6?'ضيف الـ 6 عينات للسلة':`اختار 6 عينات (متبقي ${6-s})`,
@@ -347,7 +339,7 @@ h1:'CRAFTED FOR PRESENCE.',hp:'Elegant scents with depth, softness, and characte
 sh:'The Collection',ss:'Pick a category, tap a perfume for details, and order on WhatsApp.',rh:'What customers say',
 tot:'Estimated Total',wa:'Order on WhatsApp',ft:'© 2026 Nuveira Perfumes. All products are made in Turkey.',
 all:'All',cats:{m:"Men's",w:"Women's",u:'Unisex',o:'Other'},add:'Add to cart',done:'Added',x:'Close',
-empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',szt:'Size: 6 × 3 ml (~40 sprays each)',rp0:'Play reviews slideshow',rp1:'Pause reviews slideshow',more:c=>`More ${c} fragrances`,
+empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',szt:'Size: 6 × 3 ml (~40 sprays each)',more:c=>`More ${c} fragrances`,
 choose:'Choose Perfumes',tpTitle:'Choose 6 testers from the collection',tpCount:(s,m)=>`${s} of ${m} selected`,
 tpMen:"Men's Choice",tpWomen:"Women's Choice",tpCustom:'Custom Choice',
 tpEmpty:'+ Empty slot',tpAddBtn:s=>s===6?'Add 6 Testers to Cart':`Select 6 testers (${6-s} left)`,
@@ -542,17 +534,9 @@ function drawCart(){
 }
 
 const SPEED=38;
-let revHold=false;
 let touchRafId=null;
 
 const isTouchDevice=()=>('ontouchstart' in window||navigator.maxTouchPoints>0)&&(window.matchMedia('(pointer: coarse)').matches||window.matchMedia('(max-width:1024px)').matches);
-
-function revSync(){
-  const m=$('#rev .marq'),b=$('#rp');if(!m||!b)return;
-  m.classList.toggle('hold',revHold);
-  b.toggleAttribute('data-p',revHold);
-  b.setAttribute('aria-label',L[lang][revHold?'rp0':'rp1']);
-}
 
 function startTouchAutoscroll(m, W){
   if(touchRafId){cancelAnimationFrame(touchRafId);touchRafId=null}
@@ -567,7 +551,7 @@ function startTouchAutoscroll(m, W){
   m.addEventListener('touchend',()=>{
     isTouching=false;
     clearTimeout(resumeTimer);
-    resumeTimer=setTimeout(()=>{userScrolling=false},1200);
+    resumeTimer=setTimeout(()=>{userScrolling=false},800);
   },{passive:true});
 
   m.addEventListener('scroll',()=>{
@@ -585,7 +569,7 @@ function startTouchAutoscroll(m, W){
     const dt=Math.min((now-lastTime)/1000,0.1);
     lastTime=now;
 
-    if(!revHold&&!isTouching&&!userScrolling&&W>0){
+    if(!isTouching&&!userScrolling&&W>0){
       m.scrollLeft+=SPEED*dt;
       if(m.scrollLeft>=W){
         m.scrollLeft-=W;
@@ -612,7 +596,6 @@ function drawRev(){
   const unit=firstCard.getBoundingClientRect().width+mr;
   const isTouch=isTouchDevice();
 
-  // Multiplier ensures ample content buffer across screens
   const k=Math.max(isTouch?2:1,Math.ceil((m.clientWidth||innerWidth)/(n*unit)));
   tr.innerHTML=real+real.replace(/<blockquote>/g,'<blockquote class="cl" aria-hidden="true">').repeat(2*k-1);
 
@@ -623,16 +606,6 @@ function drawRev(){
     m.classList.remove('touch-mode');
     tr.style.setProperty('--d',(k*n*unit/SPEED)+'s');
   }
-
-  revSync();
-}
-
-const rpBtn=$('#rp');
-if(rpBtn){
-  rpBtn.onclick=()=>{
-    revHold=!revHold;
-    revSync();
-  };
 }
 
 let rw=innerWidth,rz;addEventListener('resize',()=>{if(innerWidth===rw)return;rw=innerWidth;clearTimeout(rz);rz=setTimeout(drawRev,300)});
