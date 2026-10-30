@@ -127,7 +127,7 @@ small{color:var(--mute)}
 @keyframes bump{50%{transform:scale(1.4)}}
 @media(max-width:520px){.wrap{padding:0 14px}.top .wrap{gap:8px}.logo{font-size:21px;letter-spacing:.08em}.act{gap:4px}.hsoc{gap:0}.hsoc a{width:34px;height:34px}.hsoc svg{width:18px;height:18px}.lang{padding:3px 10px}.cartbtn{width:38px;height:38px}}
 @media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}.detail{grid-template-columns:1fr;gap:24px}nav{display:none}section{padding:60px 0}}
-@media(prefers-reduced-motion:reduce){*:not(.track),::before{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-motion:reduce){*:not(.track),::before{transition:none!important;animation:none!important;scroll-behavior:auto!important}.track{animation-play-state:paused!important}}
 @media(hover:hover){
 nav a:hover{color:var(--gold2)}
 .lang:hover,.cartbtn:hover{border-color:var(--gold);color:var(--gold)}
@@ -165,23 +165,27 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 #shop::before{content:"";position:absolute;left:0;right:0;top:0;height:170px;background:linear-gradient(#000,transparent);pointer-events:none}
 #shop>.wrap{position:relative}
 .size{display:inline-block;margin-bottom:14px;padding:1px 14px;border:1px solid var(--line);border-radius:999px;background:var(--g2);color:var(--text);font-size:14px}
-.marq{position:relative;overflow:hidden;direction:ltr;outline-offset:4px}
-.marq::before,.marq::after{content:"";position:absolute;top:0;bottom:0;width:6%;z-index:2;pointer-events:none}
+
+/* Reviews Marquee - Clean, non-shifted layout */
+.marq{position:relative;overflow:hidden;direction:ltr}
+.marq::before,.marq::after{content:"";position:absolute;top:0;bottom:0;width:50px;max-width:10%;z-index:2;pointer-events:none}
 .marq::before{left:0;background:linear-gradient(to right,var(--panel),transparent)}
 .marq::after{right:0;background:linear-gradient(to left,var(--panel),transparent)}
 .track{display:flex;align-items:center;width:max-content;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;animation:revslide var(--d,60s) linear infinite}
-@keyframes revslide{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
-.marq.hold .track,.marq.tp .track,.marq:focus-visible .track{animation-play-state:paused}
-@media(hover:hover) and (pointer:fine){.marq:hover .track{animation-play-state:paused}}
-.track>blockquote{flex:0 0 380px;width:380px;max-width:380px;margin:0 20px 0 0;padding:22px 24px;background:var(--g2);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:14px;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+@keyframes revslide{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+/* Only pause when hold class is active from pause button */
+.marq.hold .track{animation-play-state:paused}
+
+.track>blockquote{flex:0 0 380px;width:380px;max-width:380px;margin:0 18px 0 0;padding:22px 24px;background:var(--g2);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:14px;-webkit-backface-visibility:hidden;backface-visibility:hidden;user-select:none}
 [dir=rtl] .track>blockquote{direction:rtl}
 .track p{white-space:pre-line;font-size:15px;line-height:1.9}
-@media(max-width:560px){.track>blockquote{flex:0 0 min(82vw,340px);width:min(82vw,340px);max-width:min(82vw,340px)}}
-.marq.strip{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.marq.strip .track{animation:none;will-change:auto}
-.marq.strip .cl,.marq.strip::before,.marq.strip::after{display:none}
+@media(max-width:560px){
+.marq::before,.marq::after{width:24px}
+.track>blockquote{flex:0 0 min(82vw,320px);width:min(82vw,320px);max-width:min(82vw,320px);margin:0 14px 0 0;padding:18px 20px}
+}
 #reviews .wrap{position:relative}
-.rp{position:absolute;top:10px;inset-inline-end:20px;z-index:3;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid #444;color:var(--text)}
+.rp{position:absolute;top:10px;inset-inline-end:20px;z-index:3;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid #444;color:var(--text);transition:border-color .2s,color .2s}
+.rp:hover{border-color:var(--gold);color:var(--gold)}
 .rp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .rp .i-play,.rp[data-p] .i-pause{display:none}
 .rp[data-p] .i-play{display:block}
@@ -246,15 +250,13 @@ heroSrc();
 
 <script>
 // ===== Configuration & Phone Obfuscation =====
-const WA_PARTS=['90','552','607','15','14']; // Obfuscated against basic web scrapers
+const WA_PARTS=['90','552','607','15','14'];
 const getWA=()=>WA_PARTS.join('');
 const IG='https://www.instagram.com/nuveira.perfumes/';
 const TT='https://www.tiktok.com/@nuveira.perfumes';
 
-// HTML Entity Sanitizer to prevent DOM injection
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-// [id, name, price in TL, category: m = men, w = women, u = unisex, o = other]
 const P=[
 [3,'Thair',699.99,'m'],[8,'Royal Elixir',899.99,'m'],[38,'Aura Mirage',799.99,'m'],[37,'Avenor',699.99,'m'],[11,'Midnight Aria',999.99,'m'],[40,'Crown Elixir',799.99,'m'],[20,'Night Pulse',799.99,'m'],
 [27,'Lumora',699.99,'w'],[4,'Ice Vanilla',699.99,'w'],[5,'Berry Goodness',699.99,'w'],[28,'Impadore',799.99,'w'],[101,'Imperium',699.99,'w'],
@@ -273,7 +275,7 @@ citrus:['حمضيات','Citrus'],lemon:['ليمون','Lemon'],grapefruit:['جر�
 pinkpepper:['فلفل وردي','Pink pepper'],cardamom:['هيل','Cardamom'],cinnamon:['قرفة','Cinnamon'],nutmeg:['جوزة الطيب','Nutmeg'],ginger:['زنجبيل','Ginger'],saffron:['زعفران','Saffron'],davana:['دافانا','Davana'],rosemary:['روزماري','Rosemary'],sage:['مريمية','Sage'],mint:['نعناع','Mint'],juniper:['عرعر','Juniper'],
 florals:['زهور','Florals'],whiteflowers:['زهور بيضا','White flowers'],rose:['ورد','Rose'],jasmine:['ياسمين','Jasmine'],orangeblossom:['زهر البرتقال','Orange blossom'],tuberose:['تيوبروز','Tuberose'],peony:['فاوانيا','Peony'],orchid:['أوركيد','Orchid'],lavender:['لافندر','Lavender'],violet:['بنفسج','Violet'],violetleaf:['ورق البنفسج','Violet leaf'],geranium:['جيرانيوم','Geranium'],carnation:['زهرة القرنفل','Carnation'],
 vanilla:['فانيليا','Vanilla'],tonka:['فول التونكا','Tonka bean'],praline:['برالين','Praline'],cocoa:['كاكاو','Cocoa'],coffee:['قهوة','Coffee'],toffee:['توفي','Toffee'],coumarin:['كومارين','Coumarin'],
-amber:['عنبر','Amber'],whiteamber:['عنبر أبيض','White amber'],ambergris:['عنبر رمادي','Ambergris'],ambrox:['أمبروكس','Ambrox'],amberwood:['خشب العنبر','Amberwood'],oud:['عود','Oud'],sandalwood:['صندل','Sandalwood'],cedar:['خشب الأرز','Cedar'],guaiac:['خشب الغاياك','Guaiac wood'],woods:['أخشاب','Woods'],pine:['صنوبر','Pine'],fir:['راتنج التنوب','Fir resin'],patchouli:['باتشولي','Patchouli'],vetiver:['فيتيفر','Vetiver'],oakmoss:['طحلب البلوط','Oakmoss'],moss:['طحلب','Moss'],benzoin:['جاوي','Benzoin'],elemi:['إليمي','Elemi'],incense:['بخور','Incense'],cypriol:['سيبريول','Cypriol'],musk:['مسك','Musk'],leather:['جلد','Leather'],suede:['سويد','Suede'],
+amber:['عنبر','Amber'],whiteamber:['عنبر أبيض','White amber'],ambergris:['عنبر رمادي','Ambergris'],ambrox:['أمبروكس','Ambrox'],amberwood:['خشب العنبر','Amberwood'],oud:['عود','Oud'],sandalwood:['صندل','Sandalwood'],cedar:['خشب الأرز','Cedar'],guaiac:['خشب الغاياك','Guaiac wood'],woods:['أخشاب','Woods'],pine:['صنوبر','Pine'],fir:['راتنج التنوب','Fir resin'],patchouli:['باتشولي','Patchouli'],vetiver:['فيتيفر','Vetiver'],oakmoss:['طحلب البلوط','Oakmoss'],moss:['طحلب','Moss'],benzoin:['جاوي','Benzoin'],elemi:['إليمي','Elemi'],incense:['بخور','Incense'],cypriol:['سيبريول','Base Cypriol'],musk:['مسك','Musk'],leather:['جلد','Leather'],suede:['سويد','Suede'],
 citron:['أترج','Citron'],orange:['برتقال','Orange'],bitterorange:['برتقال مر','Bitter orange'],passionfruit:['باشن فروت','Passionfruit'],frangipani:['فرانجيباني','Frangipani'],labdanum:['لابدانوم','Labdanum'],sichuan:['فلفل سيشوان','Sichuan pepper'],staranise:['يانسون نجمي','Star anise'],pear:['كمثرى','Pear'],akigalawood:['أكيغالا وود','Akigalawood'],pineapple:['أناناس','Pineapple'],hyacinth:['سنبل','Hyacinth'],iris:['سوسن','Iris'],fruits:['فواكه','Fruits'],whitemusk:['مسك أبيض','White musk'],blackcurrant:['كشمش أسود','Black Currant'],apricot:['مشمش','Apricot'],basil:['ريحان','Basil'],fig:['تين','Fig'],ambrette:['حب المسك','Ambrette'],neroli:['نيرولي','Neroli'],blacktea:['شاي أسود','Black tea'],
 bourbonvanilla:['فانيليا بوربون','Bourbon Vanilla'],ambroxan:['أمبروكسان','Ambroxan'],tangerine:['يوسفي','Tangerine'],calabrianbergamot:['برجموت كالابريا','Calabrian Bergamot'],sicilianorange:['برتقال صقلي','Sicilian Orange'],sicilianlemon:['ليمون صقلي','Sicilian Lemon'],nigerianginger:['زنجبيل نيجيري','Nigerian Ginger'],tunisianneroli:['نيرولي تونسي','Tunisian Neroli'],ceyloncinnamon:['قرفة سيلان','Ceylon Cinnamon'],chineseblacktea:['شاي أسود صيني','Chinese Black Tea'],olibanum:['لبان','Olibanum'],sicilianbergamot:['برجموت صقلي','Sicilian Bergamot'],agarwood:['عود','Agarwood (Oud)'],haitianvetiver:['فيتيفر هايتي','Haitian Vetiver'],isoesuper:['آيزو إي سوبر','Iso E Super'],mandarinorange:['برتقال يوسفي','Mandarin Orange'],tunisianorangeblossom:['زهر البرتقال التونسي','Tunisian Orange Blossom'],jasminesambac:['ياسمين سمبك','Jasmine Sambac'],madagascarvanilla:['فانيليا مدغشقر','Madagascar Vanilla'],orris:['جذور السوسن','Orris'],bulgarianrose:['ورد بلغاري','Bulgarian Rose'],cacao:['كاكاو','Cacao'],cashmerewood:['خشب الكشمير','Cashmere Wood'],vanillacaviar:['كافيار الفانيليا','Vanilla Caviar'],vanillaabsolute:['خلاصة الفانيليا','Vanilla Absolute'],italianmandarin:['يوسفي إيطالي','Italian Mandarin'],italianbergamot:['برجموت إيطالي','Italian Bergamot'],turkishrose:['ورد تركي','Turkish Rose'],moroccanorangeblossom:['زهر البرتقال المغربي','Moroccan Orange Blossom'],solarnotes:['نوتات شمسية','Solar Notes'],mahonial:['ماهونيال','Mahonial'],myrrh:['مُر','Myrrh'],coriander:['كزبرة','Coriander'],mayrose:['ورد مايو','May Rose'],carrotseeds:['بذور الجزر','Carrot Seeds']};
 
@@ -300,7 +302,7 @@ const NOTES={
 
 const REVIEWS=[
 {ar:"يجماعة المسك تحفةةة ، وريحته ثابتة اوي وفنفس الوقت مش فواحة الي هو بزيادة ، فواحة على قد الي يقرب مني \"الي عايز يقدر يزود وهتبقى فواحة اكتر\" ف هي بجد تحفة ، والريحة خطيرة مشعارفة ازاي اوصفها بس ريحتها نظافة مع ورود وكيك حاجة كدة ، تسلم ايدكم بجد واستمرو فالتقدم للامام ، متاكدة انكم بالمستوى دا هتوصلو للعالمية قريب مش بعيد💗💗 \"اخدت المسك الفاتح مش الطهارة ، الي لونه مشمشي تقريبا\"",en:"You guys, the musk is a masterpiece!!! The scent really lasts, but at the same time it isn’t over the top. It projects just enough for whoever comes close to me (“if you want more, you can spray more and it’ll be stronger”). Honestly it’s a masterpiece, and the smell is wild, I don’t even know how to describe it, but it smells clean, like roses and cake or something. Thank you so much, and keep moving forward. I’m sure that at this level you’ll be going global soon, not far off at all 💗💗 “I got the light musk, not the Tahara one, the apricot-colored one, I think.”"},
-{ar:"العطر حلو جدا  وثابته حلو وحتى بمشي او بقعد مع اي حد بيقولي عطرك منين وتقريبا اغلب صاحبي هيستنو يرجعو من الاجازه عشان يشترو منكم الله يوفقكم ويسعدكم  شغلكم حلو جدا وعندكم ضمير",en:"The perfume is really nice and it lasts. Whether I’m walking or sitting with someone, people keep asking me where my perfume is from, and most of my friends are waiting until they’re back from vacation to buy from you. May God bless you and make you happy. Your work is really good and you’re honest people."},
+{ar:"العطر حلو جدا وثابته حلو وحتى بمشي او بقعد مع اي حد بيقولي عطرك منين وتقريبا اغلب صاحبي هيستنو يرجعو من الاجازه عشان يشترو منكم الله يوفقكم ويسعدكم شغلكم حلو جدا وعندكم ضمير",en:"The perfume is really nice and it lasts. Whether I’m walking or sitting with someone, people keep asking me where my perfume is from, and most of my friends are waiting until they’re back from vacation to buy from you. May God bless you and make you happy. Your work is really good and you’re honest people."},
 {ar:"عاشت إيدك على العطر ما شاء الله نفس كل مرة ثبات وفوحان بأعلى جودة \u200e\u200e%\u200e100",en:"Great job on this perfume, mashallah! Same as every time: it lasts and it projects, top quality, 100%."},
 {ar:"المهم الثبات 10/10\nالفوحان مابين معي منيح\nالتطابق 90% \nعجبني برضو القنينة فخمة جدا هيه والملصق وكأنه شي براند فرنسي 👌🏻👌🏻👌🏻❤️❤️❤️",en:"What matters: longevity 10/10\nProjection: somewhere between okay and good\nMatch: 90%\nI also loved the bottle, it looks really luxurious, and the label makes it look like a French brand 👌🏻👌🏻👌🏻❤️❤️❤️"},
 {ar:"مراحب شباب العطر الصراحه ثابت وريحتو لسا بأيدي من مبارح يعني عنجد يسلم اديكو يا غوالي وانشاءالله الجايات احسن ان شاء الله بتوفيق يارب 🤍",en:"Hey guys, honestly the perfume really lasts, I can still smell it on my hand from yesterday. Seriously, well done, my dear friends, and God willing the next ones will be even better. Wishing you every success 🤍"},
@@ -310,7 +312,7 @@ const L={
 ar:{dir:'rtl',title:'نوفيرا للعطور',sw:'EN',n1:'التشكيلة',n2:'آراء العملاء',n3:'تواصل معانا',ct:'السلة',ct2:'سلتك',
 h1:'استكشف الفخامة',hp:'ريحة ناعمة وفخمة، بتحسسك بالرقي كل يوم.',cta:'شوف التشكيلة',
 sh:'التشكيلة',ss:'اختار القسم، دوس على العطر تشوف تفاصيله، واطلب على واتساب.',rh:'آراء العملاء',
-tot:'الإجمالي المبدئي',wa:'اطلب على واتساب',ft:'© 2026 نوفيرا للعطور. كل المنتجات  مصنوعه في تركيا.',
+tot:'الإجمالي المبدئي',wa:'اطلب على واتساب',ft:'© 2026 نوفيرا للعطور. كل المنتجات مصنوعه في تركيا.',
 all:'الكل',cats:{m:'رجالي',w:'حريمي',u:'للجنسين',o:'أخرى'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',
 empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',szt:'الحجم: 6 × 3 مل (~40 بخة لكل عطر)',rp0:'شغّل عرض الآراء',rp1:'وقّف عرض الآراء',more:c=>`كمان في قسم ${c}`,
 choose:'اختار العطور',tpTitle:'اختار 6 عينات من التشكيلة',tpCount:(s,m)=>`تم اختيار ${s} من ${m}`,
@@ -348,7 +350,6 @@ const ph=(p,tag,a='',z=512)=>{
 
 let lang='ar',cat='all',qty=1,cart={},selTesters=[],activeDetailId=null;
 
-// Strict localStorage parsing and validation to prevent prototype pollution or corrupted state
 try{
   const raw=JSON.parse(localStorage.getItem('nv')||'{}');
   if(raw&&typeof raw==='object'&&!Array.isArray(raw)){
@@ -521,34 +522,40 @@ function drawCart(){
 }
 
 const SPEED=38;
-let revStrip=matchMedia('(prefers-reduced-motion:reduce)').matches,revHold=false;
+let revHold=false;
+
 function revSync(){
   const m=$('#rev .marq'),b=$('#rp');if(!m||!b)return;
-  const off=revStrip||revHold;
-  m.classList.toggle('strip',revStrip);
-  m.classList.toggle('hold',revHold&&!revStrip);
-  b.toggleAttribute('data-p',off);
-  b.setAttribute('aria-label',L[lang][off?'rp0':'rp1']);
+  m.classList.toggle('hold',revHold);
+  b.toggleAttribute('data-p',revHold);
+  b.setAttribute('aria-label',L[lang][revHold?'rp0':'rp1']);
 }
+
 function drawRev(){
   const T=L[lang],box=$('#rev');if(!T.rv.length){box.innerHTML='';return}
   const card=r=>`<blockquote><p>${esc(r.t)}</p></blockquote>`;
   const real=T.rv.map(card).join('');
-  box.innerHTML=`<div class="marq" tabindex="0" role="region" aria-label="${esc(T.rh)}"><div class="track">${real}</div></div>`;
+  box.innerHTML=`<div class="marq" role="region" aria-label="${esc(T.rh)}"><div class="track">${real}</div></div>`;
   const m=$('#rev .marq'),tr=m.firstElementChild,n=T.rv.length;
   const firstCard=tr.firstElementChild;
-  const unit=(firstCard?firstCard.getBoundingClientRect().width:340)+20;
+  if(!firstCard)return;
+  const cs=getComputedStyle(firstCard);
+  const mr=parseFloat(cs.marginRight)||18;
+  const unit=firstCard.getBoundingClientRect().width+mr;
   const k=Math.max(1,Math.ceil((m.clientWidth||innerWidth)/(n*unit)));
   tr.innerHTML=real+real.replace(/<blockquote>/g,'<blockquote class="cl" aria-hidden="true">').repeat(2*k-1);
   tr.style.setProperty('--d',(k*n*unit/SPEED)+'s');
-  let t;m.addEventListener('touchstart',()=>{clearTimeout(t);m.classList.add('tp')},{passive:true});
-  ['touchend','touchcancel'].forEach(e=>m.addEventListener(e,()=>{t=setTimeout(()=>m.classList.remove('tp'),2500)},{passive:true}));
   revSync();
 }
+
 const rpBtn=$('#rp');
 if(rpBtn){
-  rpBtn.onclick=()=>{if(revStrip){revStrip=false;revHold=false}else revHold=!revHold;revSync()};
+  rpBtn.onclick=()=>{
+    revHold=!revHold;
+    revSync();
+  };
 }
+
 let rw=innerWidth,rz;addEventListener('resize',()=>{if(innerWidth===rw)return;rw=innerWidth;clearTimeout(rz);rz=setTimeout(drawRev,300)});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawRev);
 
