@@ -54,6 +54,17 @@ h2{font-size:clamp(30px,5vw,46px);color:var(--text);margin-bottom:6px}
 .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
 .tabs button{border:1px solid var(--line);padding:4px 20px;border-radius:999px;color:var(--mute)}
 .tabs button[aria-pressed=true]{border-color:var(--gold);color:var(--gold);background:var(--g2)}
+.tabs button.tab-hot{position:relative;overflow:hidden;border-color:rgba(201,162,75,.55);color:var(--gold2);background:linear-gradient(135deg,rgba(201,162,75,.16),rgba(201,162,75,.04));font-weight:600;box-shadow:0 0 18px rgba(201,162,75,.12)}
+.tabs button.tab-hot::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(230,200,120,.28) 50%,transparent 75%);transform:translateX(-120%);animation:tabshine 4.2s ease-in-out infinite}
+@keyframes tabshine{0%,60%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+.tabs button.tab-hot[aria-pressed=true]{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#000;border-color:var(--gold2);box-shadow:0 6px 22px rgba(201,162,75,.28)}
+.tabs button.tab-hot[aria-pressed=true]::after{display:none}
+.hot-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:-8px 0 26px;padding:16px 20px;border-radius:12px;border:1px solid rgba(201,162,75,.42);background:radial-gradient(circle at top right,rgba(201,162,75,.16),transparent 65%),var(--panel)}
+.hot-banner[hidden]{display:none}
+.hot-banner strong{display:block;color:var(--gold2);font-size:18px;margin-bottom:2px}
+.hot-banner>div>span{color:#d4d4d4;font-size:14px}
+.hot-pill{background:linear-gradient(135deg,#fde598,#e6c878);color:#000;border:1px solid #fff3c4;font-weight:800;font-size:14px;padding:5px 16px;border-radius:999px;white-space:nowrap;box-shadow:0 0 20px rgba(230,200,120,.32)}
+.card.card-hot{border-color:rgba(201,162,75,.45);box-shadow:0 12px 30px rgba(201,162,75,.08)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
 .ph{position:relative;display:block;width:100%;padding:0;aspect-ratio:4/5;overflow:hidden;background:linear-gradient(135deg,#2a2a2a,#111)}
@@ -240,7 +251,7 @@ function heroSrc(){const v=document.querySelector('.hv'),f=matchMedia(HQ).matche
 heroSrc();
 </script><button class="vp" id="vp" type="button" aria-label=""><svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button><div class="wrap"><h1 data-t="h1"></h1><p data-t="hp"></p><a class="btn" href="#shop" data-t="cta"></a></div></div>
 <section id="shop"><div class="wrap"><h2 data-t="sh"></h2><p class="sub" data-t="ss"></p>
-<div class="tabs" id="tabs"></div><div class="grid" id="grid"></div></div></section>
+<div class="tabs" id="tabs"></div><div class="hot-banner" id="hotBanner" hidden></div><div class="grid" id="grid"></div></div></section>
 <section id="reviews" style="background:var(--panel);border-block:1px solid var(--line)"><div class="wrap"><h2 data-t="rh"></h2></div><div class="rev" id="rev"></div></section>
 </main>
 <footer id="contact"><div class="wrap"><div class="logo">Nuveira</div>
@@ -335,7 +346,7 @@ ar:{dir:'rtl',title:'نوفيرا للعطور',sw:'EN',n1:'التشكيلة',n2
 h1:'استكشف الفخامة',hp:'ريحة ناعمة وفخمة، بتحسسك بالرقي كل يوم.',cta:'شوف التشكيلة',
 sh:'التشكيلة',ss:'اختار القسم، دوس على العطر تشوف تفاصيله، واطلب على واتساب.',rh:'آراء العملاء',
 tot:'الإجمالي المبدئي',wa:'اطلب على واتساب',ft:'© 2026 نوفيرا للعطور. كل المنتجات مصنوعه في تركيا.',
-all:'الكل',cats:{m:'رجالي',w:'حريمي',u:'للجنسين',o:'أخرى'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',sale:d=>`خصم ${d}%`,
+all:'الكل',s40:'✦ خصم 40%',s40Title:'✦ التشكيلة الذهبية — خصم 40%',s40Sub:'6 عطور مختارة بأكبر خصم لدينا لفترة محدودة — نفس الفخامة بسعر استثنائي.',s40Tag:'عرض خاص 40%',cats:{m:'رجالي',w:'حريمي',u:'للجنسين',o:'أخرى'},add:'ضيف للسلة',done:'اتضاف',x:'اقفل',sale:d=>`خصم ${d}%`,
 empty:'السلة فاضية. ضيف عطر عشان تبدأ.',nm:'خريطة النوتات',nt:'القمة',nh:'القلب',nb:'القاعدة',soon:'النوتات هتتضاف قريب.',vp0:'شغّل الفيديو',vp1:'وقّف الفيديو',sz:'الحجم: 50 مل',szm:'الحجم: 6 مل',szt:'الحجم: 6 × 5 مل (~60 بخة لكل عطر)',more:c=>`كمان في قسم ${c}`,
 choose:'اختار العطور',tpTitle:'اختار 6 عينات من التشكيلة',tpCount:(s,m)=>`تم اختيار ${s} من ${m}`,
 tpMen:'المجموعه الرجاليه',tpWomen:'المجموعه النسائيه',tpCustom:'اختيار مخصص',
@@ -348,7 +359,7 @@ en:{dir:'ltr',title:'Nuveira Perfumes',sw:'عربي',n1:'Shop',n2:'Reviews',n3:'
 h1:'CRAFTED FOR PRESENCE.',hp:'Elegant scents with depth, softness, and character, made to feel luxurious every day.',cta:'Shop the collection',
 sh:'The Collection',ss:'Pick a category, tap a perfume for details, and order on WhatsApp.',rh:'What customers say',
 tot:'Estimated Total',wa:'Order on WhatsApp',ft:'© 2026 Nuveira Perfumes. All products are made in Turkey.',
-all:'All',cats:{m:"Men's",w:"Women's",u:'Unisex',o:'Other'},add:'Add to cart',done:'Added',x:'Close',sale:d=>`${d}% OFF`,
+all:'All',s40:'✦ 40% OFF',s40Title:'✦ The Vault Offer — 40% OFF',s40Sub:'Six signature fragrances at our deepest 40% discount for a limited time.',s40Tag:'LIMITED 40% OFF',cats:{m:"Men's",w:"Women's",u:'Unisex',o:'Other'},add:'Add to cart',done:'Added',x:'Close',sale:d=>`${d}% OFF`,
 empty:'Your cart is empty. Add a perfume to get started.',nm:'Fragrance notes',nt:'Top',nh:'Heart',nb:'Base',soon:'Notes coming soon.',vp0:'Play video',vp1:'Pause video',sz:'Size: 50 ml',szm:'Size: 6 ml',szt:'Size: 6 × 5 مل (~60 sprays each)',more:c=>`More ${c} fragrances`,
 choose:'Choose Perfumes',tpTitle:'Choose 6 testers from the collection',tpCount:(s,m)=>`${s} of ${m} selected`,
 tpMen:"Men's Choice",tpWomen:"Women's Choice",tpCustom:'Custom Choice',
@@ -411,12 +422,21 @@ const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEac
 const reveal=els=>els.forEach((el,i)=>{if(!io)return;el.classList.add('rv');el.style.setProperty('--i',i%3);io.observe(el)});
 addEventListener('scroll',()=>$('.top').classList.toggle('s',scrollY>20),{passive:true});
 
-const card=p=>`<article class="card">${ph(p,'button',`data-open="${p.id}" aria-label="${esc(pname(p))}"`)}<div class="body"><h3><button data-open="${p.id}"><bdi>${esc(pname(p))}</bdi></button></h3><span class="cat">${esc(L[lang].cats[p.c])}</span>${priceHtml(p)}${p.id===200?`<button class="add" data-open="${p.id}">${esc(L[lang].choose)}</button>`:`<button class="add" data-add="${p.id}">${esc(L[lang].add)}</button>`}</div></article>`;
+const card=p=>`<article class="card${p.disc===40&&cat==='s40'?' card-hot':''}">${ph(p,'button',`data-open="${p.id}" aria-label="${esc(pname(p))}"`)}<div class="body"><h3><button data-open="${p.id}"><bdi>${esc(pname(p))}</bdi></button></h3><span class="cat">${esc(L[lang].cats[p.c])}</span>${priceHtml(p)}${p.id===200?`<button class="add" data-open="${p.id}">${esc(L[lang].choose)}</button>`:`<button class="add" data-add="${p.id}">${esc(L[lang].add)}</button>`}</div></article>`;
 
 function drawShop(){
   const T=L[lang];
-  $('#tabs').innerHTML=[['all',T.all]].concat(Object.entries(T.cats)).map(([k,v])=>`<button data-cat="${esc(k)}" aria-pressed="${k==cat}">${esc(v)}</button>`).join('');
-  $('#grid').innerHTML=P.filter(p=>cat=='all'||p.c==cat).map(card).join('');
+  $('#tabs').innerHTML=[['all',T.all],['s40',T.s40,'tab-hot']].concat(Object.entries(T.cats)).map(([k,v,cls])=>`<button${cls?` class="${cls}"`:''} data-cat="${esc(k)}" aria-pressed="${k==cat}">${esc(v)}</button>`).join('');
+  const hb=$('#hotBanner');
+  if(cat==='s40'){
+    hb.hidden=false;
+    hb.innerHTML=`<div><strong>${esc(T.s40Title)}</strong><span>${esc(T.s40Sub)}</span></div><span class="hot-pill">${esc(T.s40Tag)}</span>`;
+  }else{
+    hb.hidden=true;
+    hb.innerHTML='';
+  }
+  const list=cat==='s40'?P.filter(p=>p.disc===40):P.filter(p=>cat=='all'||p.c==cat);
+  $('#grid').innerHTML=list.map(card).join('');
   reveal([...$('#grid').children]);
 }
 
